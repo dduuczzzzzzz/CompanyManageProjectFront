@@ -262,7 +262,7 @@ const EventPage = () => {
                             <Link to={`/event/update/${item?.id}`}>
                               <Button
                                 type="primary"
-                                className=" text-white  bg-sky-500 m-1 rounded-full"
+                                className="rounded-full m-1"
                                 htmlType="submit"
                               >
                                 <EditOutlined />
@@ -275,12 +275,13 @@ const EventPage = () => {
                           ) && (
                             <>
                               <Button
+                                danger
                                 type="primary"
                                 onClick={() => {
                                   showModal()
                                   setIdDelete(item?.id)
                                 }}
-                                className=" text-white bg-red-500 m-1 rounded-full"
+                                className="m-1 rounded-full"
                               >
                                 <DeleteOutlined />
                               </Button>
