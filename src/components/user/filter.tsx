@@ -13,6 +13,10 @@ const Filter = ({
   filterValue: FilterType
 }) => {
   const handleSearch = (name: any, value: any) => {
+    if (!value) {
+      setFilter((filter: any) => ({ ...filter, [name]: '', page: 1 }))
+      return
+    }
     setFilter((filter: any) => ({ ...filter, [name]: value, page: 1 }))
   }
   const handleReset = () => {
@@ -31,6 +35,7 @@ const Filter = ({
             onChange={(event) => handleSearch('gender', event)}
             value={filterValue?.gender}
             className={'w-28'}
+            allowClear
             options={[
               { value: '2', label: 'Female' },
               { value: '1', label: 'Male', checked: true },
@@ -45,6 +50,7 @@ const Filter = ({
             onChange={(event) => handleSearch('status', event)}
             value={filterValue?.status}
             className={'w-28'}
+            allowClear
             options={[
               { value: '1', label: 'Actice' },
               { value: '0', label: 'Block' },
@@ -61,11 +67,6 @@ const Filter = ({
             setRole=""
             valueInput=""
           />
-        </div>
-        <div className={'mr-6 inline'}>
-          <Button type="primary" onClick={handleReset}>
-            Reset
-          </Button>
         </div>
         <div className={'mb-4 w-1/3 float-right'}>
           <Search

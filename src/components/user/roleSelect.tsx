@@ -29,18 +29,13 @@ export const RoleSelect = ({
     <>
       <Select
         className={'w-28' + className}
+        allowClear
         onChange={(event) => {
           handleCHange('role', event)
         }}
       >
         {roles.map((role: any, index: number) => {
-          return (
-            <Option
-              key={role.id}
-            >
-              {role.role_name}
-            </Option>
-          )
+          return <Option key={role.id}>{role.role_name}</Option>
         })}
       </Select>
     </>
