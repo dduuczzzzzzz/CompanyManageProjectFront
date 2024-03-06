@@ -4,6 +4,10 @@ import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 // import { ErrorMessage } from '../../types/user'
 
+export const getAllUserAPI = () => {
+  return axiosInstance.get(`/user/get-all`)
+}
+
 export const userApi = async (
   // method:string,
   filter: any,
