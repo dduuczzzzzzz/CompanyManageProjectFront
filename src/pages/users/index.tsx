@@ -16,6 +16,7 @@ import { getPermissions } from '../../libs/helpers/getLocalStorage'
 import { USER_DELETE, USER_UPDATE } from '../../libs/constants/Permissions'
 import Spinner from '../../components/user/spin'
 import { getRole } from '../../services/request/user'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 const ListUsers = () => {
   const permissionsInfo = getPermissions()
@@ -163,10 +164,10 @@ const ListUsers = () => {
               permissionsInfo.includes(element),
             ) && (
               <Link
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 to={`/users/edit/${record.id}`}
               >
-                Update
+                <EditOutlined />
               </Link>
             )}
           {permissionsInfo &&
@@ -174,11 +175,11 @@ const ListUsers = () => {
               permissionsInfo.includes(element),
             ) && (
               <Link
-                className='class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"'
+                className='class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"'
                 to=""
                 onClick={() => showDeleteConfirm(record)}
               >
-                Delete
+                <DeleteOutlined />
               </Link>
             )}
         </Space>

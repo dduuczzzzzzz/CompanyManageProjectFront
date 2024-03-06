@@ -5,6 +5,7 @@ import { Team } from './interface'
 import type { ColumnsType } from 'antd/es/table'
 import { useNavigate } from 'react-router-dom'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 interface Props {
   listTeam: Team[]
@@ -112,19 +113,28 @@ const ListOfTeam: React.FC<Props> = ({
       render: (_, data) => (
         <Space size="middle">
           {permissionsInfo &&
-            permissionsUpdate.every((element: string) =>
-              permissionsInfo.includes(element),
-            ) && (
-              <Button danger type="primary" onClick={() => deleteTeam(data.id)}>
-                Delete
-              </Button>
-            )}
-          {permissionsInfo &&
             permissionsDelete.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Button type="primary" onClick={() => updateTeam(data.id)}>
-                Update
+              <Button
+                type="primary"
+                onClick={() => updateTeam(data.id)}
+                className="rounded-full"
+              >
+                <EditOutlined />
+              </Button>
+            )}
+          {permissionsInfo &&
+            permissionsUpdate.every((element: string) =>
+              permissionsInfo.includes(element),
+            ) && (
+              <Button
+                danger
+                type="primary"
+                onClick={() => deleteTeam(data.id)}
+                className="rounded-full"
+              >
+                <DeleteOutlined />
               </Button>
             )}
         </Space>
@@ -188,19 +198,28 @@ const ListOfTeam: React.FC<Props> = ({
       render: (_, data) => (
         <Space size="middle">
           {permissionsInfo &&
-            permissionsUpdate.every((element: string) =>
-              permissionsInfo.includes(element),
-            ) && (
-              <Button danger type="primary" onClick={() => deleteTeam(data.id)}>
-                Delete
-              </Button>
-            )}
-          {permissionsInfo &&
             permissionsDelete.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Button type="primary" onClick={() => updateTeam(data.id)}>
-                Update
+              <Button
+                type="primary"
+                onClick={() => updateTeam(data.id)}
+                className="rounded-full"
+              >
+                <EditOutlined />
+              </Button>
+            )}
+          {permissionsInfo &&
+            permissionsUpdate.every((element: string) =>
+              permissionsInfo.includes(element),
+            ) && (
+              <Button
+                danger
+                type="primary"
+                onClick={() => deleteTeam(data.id)}
+                className="rounded-full"
+              >
+                <DeleteOutlined />
               </Button>
             )}
         </Space>

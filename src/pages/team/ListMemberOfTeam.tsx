@@ -10,6 +10,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import MainLayout from '../../components/layouts/main'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
 import { TEAM_DELETE_MEMBER } from '../../libs/constants/Permissions'
+import { DeleteOutlined } from '@ant-design/icons'
+
 const permissionsInfo = getPermissions()
 
 const ListMemberOfTeam = () => {
@@ -134,8 +136,13 @@ const ListMemberOfTeam = () => {
             TEAM_DELETE_MEMBER.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Button danger type="primary" onClick={() => deleteUser(data.id)}>
-                Delete
+              <Button
+                danger
+                type="primary"
+                onClick={() => deleteUser(data.id)}
+                className="rounded-full"
+              >
+                <DeleteOutlined />
               </Button>
             )}
         </Space>
