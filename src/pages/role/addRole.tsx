@@ -73,19 +73,20 @@ const AddRolePage = () => {
           </Form.Item>
           <Form.Item className="flex justify-center">
             <Button
-              type="dashed"
-              className="w-[110px] text-white m-5 bg-green-500 items-center rounded-full"
+              type="primary"
+              className="w-[110px] m-5 items-center rounded-full"
               htmlType="submit"
               onClick={handleSubmit}
             >
-              Thêm role
+              Add role
             </Button>
             <Button
-              type="dashed"
-              className="w-[110px] text-white bg-red-500 m-5 items-center rounded-full"
+              danger
+              type="primary"
+              className="w-[110px] m-5 items-center rounded-full"
               onClick={handleCancel}
             >
-              Hủy
+              Cancel
             </Button>
           </Form.Item>
         </Form>

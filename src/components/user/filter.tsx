@@ -73,7 +73,7 @@ const Filter = ({
             name="searchInput"
             onSearch={(event) => handleSearch('search', event)}
             placeholder="Search for name or email"
-            enterButton="Search"
+            enterButton
             size="large"
             className={' float-right'}
           />

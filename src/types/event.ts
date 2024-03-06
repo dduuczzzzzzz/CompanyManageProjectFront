@@ -27,7 +27,7 @@ export interface TypeEvent {
 
 export interface TypeParamsEvent {
   name?: string
-  type?: number
+  type?: number | string
   date?: string
   page?: number
   limit?: number

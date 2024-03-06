@@ -11,6 +11,7 @@ import {
   Modal,
   notification,
   Spin,
+  DatePicker,
 } from 'antd'
 import { deleteEvent, event, getTypeEvent } from '../../services/event'
 import { TypeEvent, TypeParamsEvent } from '../../types/event'
@@ -31,6 +32,7 @@ const EventPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const navigate = useNavigate()
+  const dateFormat = 'YYYY-MM-DD'
   const showModal = () => {
     setIsModalOpen(true)
   }
@@ -125,10 +127,19 @@ const EventPage = () => {
     setParams((params) => ({ ...params, name: search, page: 1 }))
   }
   const onSelect = (type: string) => {
+    if (!type) {
+      setParams((params) => ({ limit: params.limit, page: 1 }))
+      return
+    }
     setParams((params) => ({ ...params, type: parseInt(type), page: 1 }))
   }
   const handleChangDate = (event: any) => {
-    const { value } = event.target
+    if (!event) {
+      setParams((params) => ({ ...params, date: '', page: 1 }))
+      return
+    }
+    const value = event.format('YYYY-MM-DD')
+    console.log(value)
     setParams((params) => ({ ...params, date: value, page: 1 }))
   }
 
@@ -172,7 +183,16 @@ const EventPage = () => {
   const permissionsInfo = getPermissions()
   return (
     <MainLayout>
-      <div className="flex">
+      <Button
+        type="primary"
+        className="mb-8 bg-green-500 float-right"
+        onClick={() => {
+          navigate('/event/add')
+        }}
+      >
+        Create New Event
+      </Button>
+      <div className="flex mt-8">
         <Search
           placeholder="event name"
           className="w-[30%]"
@@ -180,41 +200,41 @@ const EventPage = () => {
           enterButton
         />
         <div className="w-[30%] ml-10">
-          <span>Loại:</span>
+          <span className="font-bold">Type</span>
           {options && (
             <Select
               options={options}
               onChange={onSelect}
               placeholder="type event"
-              className="w-[70%] ml-10"
+              className="w-[70%] ml-2"
               defaultValue="all"
+              allowClear
             />
           )}
         </div>
         <div className="w-[30%] ml-10 flex items-center">
-          <span>Ngày: </span>
-          <Input
+          <span className="font-bold">Date </span>
+          {/* <Input
             className="ml-5"
             type="datetime-local"
             onChange={handleChangDate}
+            allowClear
+          /> */}
+          <DatePicker
+            className="ml-2"
+            onChange={handleChangDate}
+            picker="date"
+            format={dateFormat}
+            allowClear
           />
         </div>
       </div>
-      <Button
-        type="primary"
-        className="m-5 bg-green-500 float-right"
-        onClick={() => {
-          navigate('/event/add')
-        }}
-      >
-        Create New Event
-      </Button>
       {isLoading ? (
         <Spin className="flex justify-center" />
       ) : (
         <div>
           <List
-            className="mt-10"
+            className="mt-2"
             itemLayout="vertical"
             size="large"
             pagination={{

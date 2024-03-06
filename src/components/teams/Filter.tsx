@@ -58,7 +58,7 @@ const Filter: React.FC<Props> = ({
               })
             }}
             placeholder="Search for team name"
-            enterButton="Search"
+            enterButton
             size="large"
             className={'w-[40%]'}
           />
