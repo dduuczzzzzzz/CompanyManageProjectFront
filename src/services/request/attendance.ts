@@ -4,7 +4,7 @@ import { AttendanceFormRequest } from '../../types/attendance'
 export const attendanceListAPI = (
   searchParams: URLSearchParams | undefined,
 ) => {
-  return axiosInstance.get('/attendance/', {
+  return axiosInstance.get('/attendance', {
     params: searchParams,
   })
 }
@@ -15,6 +15,10 @@ export const addAttendanceAPI = (data: AttendanceFormRequest) => {
       'Content-Type': 'multipart/form-data',
     },
   })
+}
+
+export const getAttendanceDetailsAPI = (id: number | undefined) => {
+  return axiosInstance.get(`/attendance/show/${id}`)
 }
 
 export const editAttendanceAPI = (
