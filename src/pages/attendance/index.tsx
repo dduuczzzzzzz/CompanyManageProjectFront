@@ -275,9 +275,11 @@ const AtendanceListPage = () => {
               )}
             </Select>
           </Form.Item>
-          <Form.Item className="ml-2">
-            <DatePicker onChange={goToDateHandler} />
-          </Form.Item>
+          {initView === 'timeGridDay' && (
+            <Form.Item className="ml-2">
+              <DatePicker onChange={goToDateHandler} />
+            </Form.Item>
+          )}
         </div>
         {(user_info?.role === ROLES.ADMIN ||
           user_info?.role === ROLES.MANAGER) && (

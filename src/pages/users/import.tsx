@@ -32,16 +32,6 @@ interface DataType {
   created_at: string
 }
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-}
 const summitButtonLayout = {
   wrapperCol: {
     sm: {
@@ -195,7 +185,6 @@ const UsersImprot = () => {
       </div>
       <div>
         <Form
-          {...formItemLayout}
           form={form}
           name="createForm"
           onFinish={(value) => onFinish(value)}
@@ -218,7 +207,7 @@ const UsersImprot = () => {
             </Button>
           </Form.Item>
         </Form>
-        <Table columns={columns} dataSource={dataImport} bordered  />
+        <Table columns={columns} dataSource={dataImport} bordered />
       </div>
     </MainLayout>
   )

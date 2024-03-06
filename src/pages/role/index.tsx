@@ -199,7 +199,7 @@ const RolePage = () => {
         <>
           <Button
             type="primary"
-            className="mb-5 bg-green-500 float-right"
+            className="mb-5 bg-green-500 float-right focus:bg-green-400"
             onClick={() => {
               navigate('/role/add')
             }}

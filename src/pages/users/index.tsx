@@ -4,6 +4,7 @@ import {
   Route,
   Link,
   redirect,
+  useNavigate,
 } from 'react-router-dom'
 import { Table, Space, Modal, Button } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
@@ -31,6 +32,7 @@ const ListUsers = () => {
     role: '',
   })
   const [isLoading, setIsLoading] = useState<boolean>()
+  const navigate = useNavigate()
   const handleDelete = async (key: string) => {
     await userApiDelete({ setIdUser, setIsLoading }, key)
   }
@@ -187,15 +189,22 @@ const ListUsers = () => {
   return (
     <MainLayout>
       <>
-        <div className="mb-12">
-          <h2>List of User</h2>
+        <div className="mb-8">
+          <Button
+            type="primary"
+            className="mb-8 bg-green-500 float-right focus:bg-green-400"
+            onClick={() => {
+              navigate('/users/add')
+            }}
+          >
+            Create New User
+          </Button>
         </div>
         <Filter setFilter={setFilter} filterValue={filter} />
         <Table
           columns={columns}
           dataSource={users}
           rowKey="id"
-          bordered
           pagination={{
             defaultPageSize: 10,
             total: totalUser,

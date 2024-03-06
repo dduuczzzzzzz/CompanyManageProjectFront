@@ -14,16 +14,6 @@ import { react } from '@babel/types'
 
 const { Option } = Select
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-}
 const summitButtonLayout = {
   wrapperCol: {
     sm: {
@@ -158,7 +148,6 @@ const FormPost = (props: any) => {
   return (
     <>
       <Form
-        {...formItemLayout}
         form={form}
         name="createForm"
         onFinish={(value) => onFinish(value)}

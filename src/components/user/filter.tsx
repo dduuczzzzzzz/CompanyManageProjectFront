@@ -26,7 +26,7 @@ const Filter = ({
   }
   return (
     <>
-      <div className={'mb-12'}>
+      <div className={'mb-6 w-full flex'}>
         <div className={'mr-6 inline'}>
           <label htmlFor="" className={'font-semibold mr-2'}>
             Gender

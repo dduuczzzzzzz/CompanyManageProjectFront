@@ -229,6 +229,19 @@ const ListOfTeam: React.FC<Props> = ({
 
   return (
     <>
+      <div className="mb-8">
+        <Button
+          type="primary"
+          onClick={() => {
+            navigate('/teams/create', { state: { teamId } })
+          }}
+          style={{ marginBottom: 10 }}
+          className="mb-8 bg-green-500 float-right focus:bg-green-400"
+        >
+          Create New Team
+        </Button>
+      </div>
+
       <Filter
         valueFilter={filter}
         setFilter={setFilter}
@@ -236,22 +249,12 @@ const ListOfTeam: React.FC<Props> = ({
         handleReset={resetTable}
       />
 
-      <Button
-        type="primary"
-        onClick={() => {
-          navigate('/teams/create', { state: { teamId } })
-        }}
-        style={{ marginBottom: 10 }}
-      >
-        Create New Team
-      </Button>
       {isLoading ? (
         <Spin className="flex justify-center" />
       ) : isSubteam ? (
         <Table
           columns={lists}
           dataSource={listTeam}
-          bordered={true}
           pagination={false}
           rowKey="id"
         />
@@ -259,7 +262,6 @@ const ListOfTeam: React.FC<Props> = ({
         <Table
           columns={listsMain}
           dataSource={listTeam}
-          bordered={true}
           pagination={false}
           rowKey="id"
         />
