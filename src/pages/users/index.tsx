@@ -4,6 +4,7 @@ import {
   Route,
   Link,
   redirect,
+  useNavigate,
 } from 'react-router-dom'
 import { Table, Space, Modal, Button } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
@@ -16,6 +17,7 @@ import { getPermissions } from '../../libs/helpers/getLocalStorage'
 import { USER_DELETE, USER_UPDATE } from '../../libs/constants/Permissions'
 import Spinner from '../../components/user/spin'
 import { getRole } from '../../services/request/user'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 const ListUsers = () => {
   const permissionsInfo = getPermissions()
@@ -30,6 +32,7 @@ const ListUsers = () => {
     role: '',
   })
   const [isLoading, setIsLoading] = useState<boolean>()
+  const navigate = useNavigate()
   const handleDelete = async (key: string) => {
     await userApiDelete({ setIdUser, setIsLoading }, key)
   }
@@ -162,23 +165,20 @@ const ListUsers = () => {
             USER_UPDATE.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Link
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                to={`/users/edit/${record.id}`}
-              >
-                Update
+              <Link to={`/users/edit/${record.id}`}>
+                <Button type="primary" className="rounded-full">
+                  <EditOutlined />
+                </Button>
               </Link>
             )}
           {permissionsInfo &&
             USER_DELETE.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Link
-                className='class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"'
-                to=""
-                onClick={() => showDeleteConfirm(record)}
-              >
-                Delete
+              <Link to="" onClick={() => showDeleteConfirm(record)}>
+                <Button type="primary" danger className="rounded-full">
+                  <DeleteOutlined />
+                </Button>
               </Link>
             )}
         </Space>
@@ -189,15 +189,22 @@ const ListUsers = () => {
   return (
     <MainLayout>
       <>
-        <div className="mb-12">
-          <h2>List of User</h2>
+        <div className="mb-8">
+          <Button
+            type="primary"
+            className="mb-8 bg-green-500 float-right focus:bg-green-400"
+            onClick={() => {
+              navigate('/users/add')
+            }}
+          >
+            Create New User
+          </Button>
         </div>
         <Filter setFilter={setFilter} filterValue={filter} />
         <Table
           columns={columns}
           dataSource={users}
           rowKey="id"
-          bordered
           pagination={{
             defaultPageSize: 10,
             total: totalUser,

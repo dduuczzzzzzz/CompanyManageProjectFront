@@ -48,44 +48,49 @@ const AddRolePage = () => {
 
   return (
     <MainLayout>
-      <h1 className="text-sky-500 flex justify-center">Thêm role </h1>
-      <Form name="update-profile" layout="vertical" form={antForm}>
-        <Row>
-          <Col span={12}>
-            <Form.Item
-              className="ml-10 mr-10"
-              name="role_name"
-              label="Tên role"
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item
-          name="description"
-          className="ml-10 mr-10 "
-          label="Description"
+      <h1 className="text-sky-500 flex justify-center">Add role </h1>
+      <div className="w-full flex justify-center">
+        <Form
+          className="w-3/4"
+          name="update-profile"
+          layout="vertical"
+          form={antForm}
         >
-          <Input.TextArea rows={3} />
-        </Form.Item>
-        <Form.Item className="flex justify-center">
-          <Button
-            type="dashed"
-            className="w-[110px] text-white m-5 bg-green-500 items-center rounded-full"
-            htmlType="submit"
-            onClick={handleSubmit}
+          <Form.Item
+            className="ml-10 mr-10"
+            name="role_name"
+            label="Role name:"
           >
-            Thêm role
-          </Button>
-          <Button
-            type="dashed"
-            className="w-[110px] text-white bg-red-500 m-5 items-center rounded-full"
-            onClick={handleCancel}
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="description"
+            className="ml-10 mr-10 "
+            label="Description:"
           >
-            Hủy
-          </Button>
-        </Form.Item>
-      </Form>
+            <Input.TextArea rows={3} />
+          </Form.Item>
+          <Form.Item className="flex justify-center">
+            <Button
+              type="primary"
+              className="w-[110px] m-5 items-center rounded-full"
+              htmlType="submit"
+              onClick={handleSubmit}
+            >
+              Add role
+            </Button>
+            <Button
+              danger
+              type="primary"
+              className="w-[110px] m-5 items-center rounded-full"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </MainLayout>
   )
 }

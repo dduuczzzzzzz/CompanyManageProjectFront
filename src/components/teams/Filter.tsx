@@ -1,4 +1,5 @@
 import { Select, Input, Button } from 'antd'
+import Search from 'antd/es/input/Search'
 import React from 'react'
 
 interface Props {
@@ -31,6 +32,13 @@ const Filter: React.FC<Props> = ({
   handleReset,
 }) => {
   const onChange = (value: string) => {
+    if (!value) {
+      setFilter({
+        ...valueFilter,
+        sort: '',
+        sortType: '',
+      })
+    }
     setFilter({
       ...valueFilter,
       sort: 'created_at',
@@ -39,66 +47,21 @@ const Filter: React.FC<Props> = ({
   }
   return (
     <>
-      <div className="... flex items-center justify-center">
-        <h1>{blog}</h1>
-      </div>
-      <div className={'mb-12'}>
+      <div className={'mb-8'}>
         <div className={'mr-6 inline'}>
-          <label htmlFor="" className={'font-semibold mr-2'}>
-            Name
-          </label>
-          <Input
+          <Search
             name="searchInput"
-            size="large"
-            style={{ width: 200 }}
-            value={valueFilter.name}
-            onChange={(e) =>
+            onSearch={(e) => {
               setFilter({
                 ...valueFilter,
-                name: e.target.value,
+                name: e,
               })
-            }
-          />
-        </div>
-        <div className={'mr-6 inline'}>
-          <label htmlFor="" className={'font-semibold mr-2'}>
-            Details
-          </label>
-          <Input
-            name="searchInput"
-            value={valueFilter.details}
+            }}
+            placeholder="Search for team name"
+            enterButton
             size="large"
-            style={{ width: 200 }}
-            onChange={(e) =>
-              setFilter({
-                ...valueFilter,
-                details: e.target.value,
-              })
-            }
+            className={'w-[40%]'}
           />
-        </div>
-        <div className={'mr-6 inline'}>
-          <label htmlFor="" className={'font-semibold mr-2'}>
-            Create At
-          </label>
-          <Select
-            style={{ width: 120 }}
-            defaultValue={valueFilter.sortType}
-            options={[
-              { value: '0', label: 'Descending' },
-              { value: '1', label: 'Ascending' },
-            ]}
-            onChange={onChange}
-          />
-        </div>
-        <div className={'mr-6 inline'}>
-          <Button
-            type="primary"
-            style={{ backgroundColor: 'brown' }}
-            onClick={handleReset}
-          >
-            Reset
-          </Button>
         </div>
       </div>
     </>

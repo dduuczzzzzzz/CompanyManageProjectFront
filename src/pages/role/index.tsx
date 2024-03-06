@@ -110,7 +110,7 @@ const RolePage = () => {
                   <Link to={`/role/update/${cr_id}`}>
                     <Button
                       type="primary"
-                      className=" text-white  bg-sky-500 m-1 rounded-full"
+                      className="m-1 rounded-full"
                       htmlType="submit"
                     >
                       <EditOutlined />
@@ -125,12 +125,13 @@ const RolePage = () => {
               ) && (
                 <>
                   <Button
+                    danger
                     type="primary"
                     onClick={() => {
                       showModal()
                       setIdDelete(cr_id)
                     }}
-                    className=" text-white bg-red-500 m-1 rounded-full"
+                    className="m-1 rounded-full"
                   >
                     <DeleteOutlined />
                   </Button>
@@ -198,7 +199,7 @@ const RolePage = () => {
         <>
           <Button
             type="primary"
-            className="mb-5 bg-green-500 float-right"
+            className="mb-5 bg-green-500 float-right focus:bg-green-400"
             onClick={() => {
               navigate('/role/add')
             }}

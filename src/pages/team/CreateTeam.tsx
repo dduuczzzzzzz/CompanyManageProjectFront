@@ -9,17 +9,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { FormInstance } from 'antd/es/form'
 import TextArea from 'antd/es/input/TextArea'
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-}
-
 const summitButtonLayout = {
   wrapperCol: {
     sm: {
@@ -189,7 +178,6 @@ const CreateTeam = () => {
             <Form
               id="myForm"
               onFinish={formik.handleSubmit}
-              {...formItemLayout}
               name="createForm"
               className={'w-3/4'}
               scrollToFirstError
@@ -217,7 +205,7 @@ const CreateTeam = () => {
                   </p>
                 ) : null}
               </Form.Item>
-              <Form.Item name="Details" label="Details">
+              <Form.Item name="Details" label="Details" className="mb-8">
                 <TextArea
                   rows={4}
                   showCount

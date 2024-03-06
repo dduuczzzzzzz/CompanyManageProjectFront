@@ -13,6 +13,10 @@ const Filter = ({
   filterValue: FilterType
 }) => {
   const handleSearch = (name: any, value: any) => {
+    if (!value) {
+      setFilter((filter: any) => ({ ...filter, [name]: '', page: 1 }))
+      return
+    }
     setFilter((filter: any) => ({ ...filter, [name]: value, page: 1 }))
   }
   const handleReset = () => {
@@ -22,7 +26,7 @@ const Filter = ({
   }
   return (
     <>
-      <div className={'mb-12'}>
+      <div className={'mb-6 w-full flex'}>
         <div className={'mr-6 inline'}>
           <label htmlFor="" className={'font-semibold mr-2'}>
             Gender
@@ -31,6 +35,7 @@ const Filter = ({
             onChange={(event) => handleSearch('gender', event)}
             value={filterValue?.gender}
             className={'w-28'}
+            allowClear
             options={[
               { value: '2', label: 'Female' },
               { value: '1', label: 'Male', checked: true },
@@ -45,6 +50,7 @@ const Filter = ({
             onChange={(event) => handleSearch('status', event)}
             value={filterValue?.status}
             className={'w-28'}
+            allowClear
             options={[
               { value: '1', label: 'Actice' },
               { value: '0', label: 'Block' },
@@ -62,17 +68,12 @@ const Filter = ({
             valueInput=""
           />
         </div>
-        <div className={'mr-6 inline'}>
-          <Button type="primary" onClick={handleReset}>
-            Reset
-          </Button>
-        </div>
         <div className={'mb-4 w-1/3 float-right'}>
           <Search
             name="searchInput"
             onSearch={(event) => handleSearch('search', event)}
             placeholder="Search for name or email"
-            enterButton="Search"
+            enterButton
             size="large"
             className={' float-right'}
           />

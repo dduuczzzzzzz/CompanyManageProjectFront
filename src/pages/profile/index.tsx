@@ -68,7 +68,7 @@ const ProfilePage = () => {
 
   return (
     <MainLayout>
-      <h1 className="text-orange-500 flex justify-center">Thông tin cá nhân</h1>
+      <h1 className="text-orange-500 flex justify-center">Personal info</h1>
       {isLoading ? (
         <Spin className="flex justify-center" />
       ) : (
@@ -88,14 +88,10 @@ const ProfilePage = () => {
                 {res?.role || ''}
               </h3>
               <p className="text-base text-white flex justify-center m-10">
-                Bằng năng lực chuyên môn và sự thấu hiểu, chúng tôi cung cấp
-                giải pháp công nghệ và chuyển đổi số để tối ưu hóa quy trình và
-                nâng cao hiệu suất công việc, góp phần thúc đẩy sự thành công
-                của khách hàng.
+                {res?.details || ''}
               </p>
             </div>
             <div className="w-1/3 h-full m-[20px] ">
-              <h1 className="flex justify-center">Details</h1>
               <h3 className="ml-10">
                 <MailOutlined className="mr-2" />
                 Email:
@@ -103,28 +99,28 @@ const ProfilePage = () => {
               <span className="ml-10">{res?.email || ''}</span>
               <h3 className="ml-10">
                 <PhoneOutlined className="mr-2" />
-                Số điện thoại:
+                Phone number:
               </h3>
               <span className="ml-10">{res?.phone_number || ''}</span>
               <h3 className="ml-10">
                 <CalendarOutlined className="mr-2" />
-                Ngày sinh:
+                Date of birth:
               </h3>
               <span className="ml-10">{res?.dob || ''}</span>
               <h3 className="ml-10">
                 <UserOutlined className="mr-2" />
-                Giới tính:
+                Gender:
               </h3>
               <span className="ml-10">{genderLabel(res?.gender) || ''}</span>
             </div>
-            <div className="w-1/3 h-full m-[20px] ">
+            {/* <div className="w-1/3 h-full m-[20px] ">
               {' '}
               <h1 className="flex justify-center">About me</h1>
               <span className="ml-10 read-only:true ">
                 {' '}
                 {res?.details || ''}
               </span>
-            </div>
+            </div> */}
           </div>
           {permissionsInfo &&
             UPDATE_PROFILE.every((element: string) =>
@@ -133,7 +129,7 @@ const ProfilePage = () => {
               <div className="flex justify-center ">
                 <Link to={'/updateProfile'}>
                   <Button className="h-[40px] rounded-full border-10 border-orange-500">
-                    Chỉnh sửa trang cá nhân
+                    Personal profile setting
                   </Button>
                 </Link>
               </div>

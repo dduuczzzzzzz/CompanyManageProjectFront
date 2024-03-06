@@ -129,7 +129,7 @@ const UpdateProfilePage = () => {
   return (
     <MainLayout>
       <h1 className="text-orange-500 flex justify-center">
-        Chỉnh sửa trang cá nhân
+        Personal profile setting
       </h1>
       {isLoading ? (
         <Spin className="flex justify-center" />
@@ -162,7 +162,7 @@ const UpdateProfilePage = () => {
               <Form.Item
                 className="ml-10 mr-10"
                 name="name"
-                label="Họ tên"
+                label="Full name"
                 initialValue={res?.name}
                 rules={[editProfileRules as any]}
               >
@@ -186,7 +186,7 @@ const UpdateProfilePage = () => {
               <Form.Item
                 className="ml-10 mr-10"
                 name="gender"
-                label="Giới tính"
+                label="Gender"
                 initialValue={res?.gender}
               >
                 <Select options={LIST_GENDER} />
@@ -196,7 +196,7 @@ const UpdateProfilePage = () => {
               <Form.Item
                 className="ml-10 mr-10"
                 name="dob"
-                label="Ngày sinh"
+                label="Date of birth"
                 initialValue={res?.dob}
                 rules={[editProfileRules as any]}
               >
@@ -209,7 +209,7 @@ const UpdateProfilePage = () => {
               <Form.Item
                 name="phone_number"
                 className="ml-10 mr-10 "
-                label="Số điện thoại"
+                label="Phone number"
                 initialValue={res?.phone_number}
               >
                 <Input />
@@ -219,7 +219,7 @@ const UpdateProfilePage = () => {
               <Form.Item
                 name="address"
                 className="ml-10 mr-10 "
-                label="Địa chỉ"
+                label="Address"
                 initialValue={res?.address}
               >
                 <Input />
@@ -250,7 +250,7 @@ const UpdateProfilePage = () => {
               <Form.Item
                 name="password_confirmation"
                 className="ml-10 mr-10 "
-                label="Nhập lại password"
+                label="Confirm password"
                 rules={[editProfileRules as any]}
               >
                 <Input type="password" name="password_confirmation" />
@@ -259,19 +259,20 @@ const UpdateProfilePage = () => {
           </Row>
           <Form.Item className="flex justify-center">
             <Button
-              type="dashed"
-              className="w-[100px] text-white m-5 bg-green-500  rounded-full"
+              type="primary"
+              className="w-[100px] text-white m-5 rounded-full"
               htmlType="submit"
               onClick={handleSubmit}
             >
-              Cập nhật
+              Update
             </Button>
             <Button
-              type="dashed"
-              className="w-[100px] text-white bg-red-500 m-5  rounded-full"
+              danger
+              type="primary"
+              className="w-[100px] m-5  rounded-full"
               onClick={handleCancel}
             >
-              Hủy
+              Cancel
             </Button>
           </Form.Item>
         </Form>

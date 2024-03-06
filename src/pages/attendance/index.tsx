@@ -203,23 +203,37 @@ const AtendanceListPage = () => {
     <MainLayout>
       <Form form={form} onFinish={handleFormSubmit}>
         <div className="flex justify-between">
-          <Form.Item name="status">
-            <Select
-              placeholder="Select attendance type"
-              onChange={statusHandler}
-            >
-              <Select.Option value="">Select attendance type</Select.Option>
-              <Select.Option value={ATTENDANCE_STATUS.NOT_REVIEWED}>
-                Not reviewed
-              </Select.Option>
-              <Select.Option value={ATTENDANCE_STATUS.ATTENDANCE_ACCEPT}>
-                Accepted
-              </Select.Option>
-              <Select.Option value={ATTENDANCE_STATUS.ATTENDANCE_REJECT}>
-                Rejected
-              </Select.Option>
-            </Select>
-          </Form.Item>
+          <div className="flex justify-start">
+            <Form.Item name="status" className="mr-3">
+              <Select
+                placeholder="Select attendance type"
+                onChange={statusHandler}
+              >
+                <Select.Option value="">Select attendance type</Select.Option>
+                <Select.Option value={ATTENDANCE_STATUS.NOT_REVIEWED}>
+                  Not reviewed
+                </Select.Option>
+                <Select.Option value={ATTENDANCE_STATUS.ATTENDANCE_ACCEPT}>
+                  Accepted
+                </Select.Option>
+                <Select.Option value={ATTENDANCE_STATUS.ATTENDANCE_REJECT}>
+                  Rejected
+                </Select.Option>
+              </Select>
+            </Form.Item>
+
+            {(user_info?.role === ROLES.ADMIN ||
+              user_info?.role === ROLES.MANAGER) && (
+              <Form.Item name={'manageMode'} className="ml-auto">
+                <Switch
+                  checkedChildren="Manage mode"
+                  unCheckedChildren="Personal mode"
+                  onClick={handleManageMode}
+                  checked={manageMode}
+                />
+              </Form.Item>
+            )}
+          </div>
 
           {permissionsInfo &&
             ATTENDANCE_EXPORT.every((element: string) =>
@@ -275,21 +289,12 @@ const AtendanceListPage = () => {
               )}
             </Select>
           </Form.Item>
-          <Form.Item className="ml-2">
-            <DatePicker onChange={goToDateHandler} />
-          </Form.Item>
+          {initView === 'timeGridDay' && (
+            <Form.Item className="ml-2">
+              <DatePicker onChange={goToDateHandler} />
+            </Form.Item>
+          )}
         </div>
-        {(user_info?.role === ROLES.ADMIN ||
-          user_info?.role === ROLES.MANAGER) && (
-          <Form.Item name={'manageMode'} className="ml-auto">
-            <Switch
-              checkedChildren="Manage mode"
-              unCheckedChildren="Personal mode"
-              onClick={handleManageMode}
-              checked={manageMode}
-            />
-          </Form.Item>
-        )}
       </Form>
       <AttendanceCalendar
         attendanceList={attendance}
