@@ -6,7 +6,7 @@ import {
   redirect,
   useNavigate,
 } from 'react-router-dom'
-import { Table, Space, Modal, Button } from 'antd'
+import { Table, Space, Modal, Button, Spin } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import MainLayout from '../../components/layouts/main'
 import Filter from '../../components/user/filter'
@@ -201,20 +201,25 @@ const ListUsers = () => {
           </Button>
         </div>
         <Filter setFilter={setFilter} filterValue={filter} />
-        <Table
-          columns={columns}
-          dataSource={users}
-          rowKey="id"
-          pagination={{
-            defaultPageSize: 10,
-            total: totalUser,
-            onChange: (page) => {
-              setFilter((filter: any) => ({ ...filter, page: page }))
-            },
-          }}
-        />
+        {isLoading ? (
+          <Spin className="flex justify-center" />
+        ) : (
+          <>
+            <Table
+              columns={columns}
+              dataSource={users}
+              rowKey="id"
+              pagination={{
+                defaultPageSize: 10,
+                total: totalUser,
+                onChange: (page) => {
+                  setFilter((filter: any) => ({ ...filter, page: page }))
+                },
+              }}
+            />
+          </>
+        )}
       </>
-      {isLoading ? <Spinner /> : ''}
     </MainLayout>
   )
 }
