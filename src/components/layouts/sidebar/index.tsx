@@ -91,10 +91,6 @@ const Sidebar = () => {
         icon: <TeamOutlined />,
         label: 'Teams',
         children: [
-          checkChildrenSidebar(TEAM_ADD, {
-            label: 'Create New Team',
-            key: '/teams/create',
-          }),
           checkChildrenSidebar(TEAM_LIST, {
             label: 'Main Teams',
             key: '/teams/',
@@ -102,6 +98,10 @@ const Sidebar = () => {
           checkChildrenSidebar(TEAM_LIST_SUB, {
             label: 'Sub Teams',
             key: '/teams/sub-teams',
+          }),
+          checkChildrenSidebar(TEAM_ADD, {
+            label: 'Create New Team',
+            key: '/teams/create',
           }),
         ],
       }),

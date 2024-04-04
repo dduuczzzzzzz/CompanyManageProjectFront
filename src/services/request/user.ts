@@ -1,4 +1,4 @@
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import axiosInstance from './base'
 import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
@@ -42,7 +42,11 @@ export const userApiDelete = async (
         setIsLoading(false)
         setTimeout(() => {
           setIdUser(id)
-          message.success('Delete successfully')
+          notification['success']({
+            key: 'delete',
+            duration: 5,
+            message: 'Delete successfully',
+          })
         }, 0)
         return true
       })
@@ -82,7 +86,11 @@ export const userApiCreate = async (
       .post(`/user/store`, createValue)
       .then((response) => {
         setTimeout(() => {
-          message.success('Create successfully a new user')
+          notification['success']({
+            key: 'add user',
+            duration: 5,
+            message: 'Add user successfully',
+          })
         }, 0)
         return response
       })
@@ -106,7 +114,11 @@ export const userApiUpdate = async (
       .post(`/user/update/${id}`, createValue)
       .then((response) => {
         setTimeout(() => {
-          message.success('Update successfully a user')
+          notification['success']({
+            key: 'update user',
+            duration: 5,
+            message: 'Update user successfully',
+          })
         }, 0)
         return response
       })

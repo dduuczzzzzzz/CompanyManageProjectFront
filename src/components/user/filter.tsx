@@ -27,6 +27,15 @@ const Filter = ({
   return (
     <>
       <div className={'mb-6 w-full flex'}>
+        <div className={'mb-4 mr-6 w-1/4 float-right'}>
+          <Search
+            name="searchInput"
+            onSearch={(event) => handleSearch('search', event)}
+            placeholder="Search for name or email"
+            enterButton
+            className={' float-right'}
+          />
+        </div>
         <div className={'mr-6 inline'}>
           <label htmlFor="" className={'font-semibold mr-2'}>
             Gender
@@ -66,16 +75,6 @@ const Filter = ({
             handleCHange={handleSearch}
             setRole=""
             valueInput=""
-          />
-        </div>
-        <div className={'mb-4 w-1/3 float-right'}>
-          <Search
-            name="searchInput"
-            onSearch={(event) => handleSearch('search', event)}
-            placeholder="Search for name or email"
-            enterButton
-            size="large"
-            className={' float-right'}
           />
         </div>
       </div>

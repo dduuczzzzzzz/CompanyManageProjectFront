@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { ColumnsType } from 'antd/es/table'
-import { Space, Button, Modal, Table, message, Spin } from 'antd'
+import { Space, Button, Modal, Table, message, Spin, notification } from 'antd'
 import ModalRemove from './ModalRemove'
 import axiosInstance from '../../services/request/base'
 import SelectOption from '../../components/teams/SelectOption'
@@ -77,11 +77,26 @@ const ListMemberOfTeam = () => {
       setShowModalDeleteMem(false)
       await getListMember()
       setTimeout(() => {
-        message.success('Delete Successful')
+        notification['success']({
+          key: 'delete member',
+          duration: 5,
+          message: 'Delete member successfully',
+        })
       }, 250)
     } else {
       setTimeout(() => {
-        message.error('Delete Fail')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: 'Delete fail!',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 250)
     }
   }
@@ -171,12 +186,27 @@ const ListMemberOfTeam = () => {
         setShowModalAddMem(false)
         await getListMember()
         setTimeout(() => {
-          message.success('Add member successful')
+          notification['success']({
+            key: 'add member',
+            duration: 5,
+            message: 'Add member successfully',
+          })
         }, 50)
       }
     } catch (error) {
       setTimeout(() => {
-        message.error('The user is already in the team')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: 'The user is already in the team',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 50)
     }
   }
@@ -200,7 +230,7 @@ const ListMemberOfTeam = () => {
         </Button>
         <Button
           type="primary"
-          className="bg-orange-500 float-right"
+          className="bg-blue-500 float-right"
           onClick={() => {
             setShowModalAddMem(true)
           }}

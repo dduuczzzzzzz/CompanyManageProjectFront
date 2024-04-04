@@ -68,13 +68,13 @@ const ProfilePage = () => {
 
   return (
     <MainLayout>
-      <h1 className="text-orange-500 flex justify-center">Personal info</h1>
+      <h1 className="text-blue-500 flex justify-center">Personal info</h1>
       {isLoading ? (
         <Spin className="flex justify-center" />
       ) : (
         <>
           <div className=" w-full h-[550px] flex ">
-            <div className="bg-orange-500 w-1/3 h-550 ">
+            <div className="bg-blue-300 w-1/3 h-550 ">
               <div className="flex justify-center mt-[5%]">
                 <Avatar
                   src={res?.avatar || './logo512.png'}
@@ -128,7 +128,7 @@ const ProfilePage = () => {
             ) && (
               <div className="flex justify-center ">
                 <Link to={'/updateProfile'}>
-                  <Button className="h-[40px] rounded-full border-10 border-orange-500">
+                  <Button className="h-[40px] rounded-full border-10 border-blue-500">
                     Personal profile setting
                   </Button>
                 </Link>

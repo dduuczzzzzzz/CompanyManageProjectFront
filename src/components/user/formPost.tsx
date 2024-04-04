@@ -328,11 +328,22 @@ const FormPost = (props: any) => {
         <Form.Item name="details" label="Details">
           <Input.TextArea showCount maxLength={100} />
         </Form.Item>
-        <Form.Item {...summitButtonLayout}>
-          <Button type="primary" htmlType="submit">
-            Save
+        <div className="flex justify-end">
+          <Form.Item className="mr-3">
+            <Button type="primary" htmlType="submit">
+              Save
+            </Button>
+          </Form.Item>
+          <Button
+            type="primary"
+            className="bg-gray-500"
+            onClick={() => {
+              navigate('/users/')
+            }}
+          >
+            Cancel
           </Button>
-        </Form.Item>
+        </div>
       </Form>
       {isLoading ? <Spinner /> : ''}
     </>

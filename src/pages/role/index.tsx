@@ -224,7 +224,7 @@ const RolePage = () => {
             onOk={() => handleDeleteRole()}
             onCancel={handleCancel}
           >
-            <p>"Are you sure to delete this role?"</p>
+            <p>Are you sure to delete this role?</p>
           </Modal>
         </>
       )}

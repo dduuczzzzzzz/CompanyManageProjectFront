@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, message } from 'antd'
+import { Button, message, notification } from 'antd'
 import ListMemberOfTeam from './ListMemberOfTeam'
 import ModalRemove from './ModalRemove'
 import ModalCreateTeam from './ModalCreateTeam'
@@ -78,11 +78,26 @@ const ListSub = () => {
       setOpenModalDelete(false)
       await getSubListTeam()
       setTimeout(() => {
-        message.success('Delete Successful')
+        notification['success']({
+          key: 'delete',
+          duration: 5,
+          message: 'Delete team successfully',
+        })
       }, 500)
     } else {
       setTimeout(() => {
-        message.error('Delete Fail')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: 'Delete fail!',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 1000)
     }
   }
@@ -106,12 +121,27 @@ const ListSub = () => {
         setOpenModalUpdateTeam(false)
         await getSubListTeam()
         setTimeout(() => {
-          message.success('Update Team Successful')
+          notification['success']({
+            key: 'update',
+            duration: 5,
+            message: 'Update team successfully',
+          })
         }, 50)
       }
     } catch (error) {
       setTimeout(() => {
-        message.error('The name has already been taken.')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: 'The name is already taken',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 50)
     }
   }

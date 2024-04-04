@@ -74,7 +74,7 @@ const LoginPage = () => {
     <HomeLayout>
       <div className="bg-sky-500  min-h-screen min-w-screen flex justify-center items-center">
         <div className="bg-white p-6 w-3/5 h-1/2 rounded-30px overflow-hidden flex">
-          <div className="w-1/2 hg_login bg-cover bg-no-repeat border-radius-30px block bg-login bg-center"></div>
+          <div className="w-1/2 hg_login bg-no-repeat border-radius-30px block bg-login bg-center"></div>
           <div className="w-1/2">
             <div className="flex flex-col ml-20 mr-20">
               <h2>Đăng nhập tài khoản của bạn</h2>
@@ -115,13 +115,13 @@ const LoginPage = () => {
                   <Input.Password onChange={handleChange} />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   name="remember"
                   valuePropName="checked"
                   wrapperCol={{ offset: 8, span: 16 }}
                 >
                   <Checkbox>Remember me</Checkbox>
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                   <Button
