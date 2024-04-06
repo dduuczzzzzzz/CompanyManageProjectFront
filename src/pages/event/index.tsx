@@ -194,7 +194,7 @@ const EventPage = () => {
       </Button>
       <div className="flex mt-8">
         <Search
-          placeholder="event name"
+          placeholder="Search event name"
           className="w-[30%]"
           onSearch={onSearch}
           enterButton

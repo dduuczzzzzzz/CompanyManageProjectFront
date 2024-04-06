@@ -32,7 +32,7 @@ const UpdateProfilePage = () => {
       setFileSelected(e.target.files[0])
     }
   }
-  const inputRef = useRef(null)
+  const inputRef = useRef<any>(null)
   const [res, setRes] = useState<any>(null)
   const [antForm] = Form.useForm()
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -128,19 +128,21 @@ const UpdateProfilePage = () => {
   }
   return (
     <MainLayout>
-      <h1 className="text-orange-500 flex justify-center">
+      <h1 className="text-blue-500 flex justify-center">
         Personal profile setting
       </h1>
       {isLoading ? (
         <Spin className="flex justify-center" />
       ) : (
         <Form name="update-profile" layout="vertical" form={antForm}>
-          <h3 className="flex justify-center ml-10 mb-4">Avatar</h3>
           <div className="flex justify-center ml-10 mb-4">
             <Avatar
               src={file}
               alt="avatar"
               className="w-[150px] h-[150px] flex justify-center"
+              onClick={() => {
+                inputRef.current?.click()
+              }}
             ></Avatar>
             {file && (
               <Button
@@ -149,7 +151,7 @@ const UpdateProfilePage = () => {
               />
             )}
           </div>
-          <div className="flex justify-center ml-10 mb-4">
+          <div className="hidden flex justify-center ml-10 mb-4">
             <input
               ref={inputRef}
               type="file"
@@ -259,20 +261,20 @@ const UpdateProfilePage = () => {
           </Row>
           <Form.Item className="flex justify-center">
             <Button
-              type="primary"
-              className="w-[100px] text-white m-5 rounded-full"
-              htmlType="submit"
-              onClick={handleSubmit}
-            >
-              Update
-            </Button>
-            <Button
               danger
               type="primary"
               className="w-[100px] m-5  rounded-full"
               onClick={handleCancel}
             >
               Cancel
+            </Button>
+            <Button
+              type="primary"
+              className="w-[100px] text-white m-5 rounded-full"
+              htmlType="submit"
+              onClick={handleSubmit}
+            >
+              Update
             </Button>
           </Form.Item>
         </Form>

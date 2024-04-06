@@ -18,14 +18,7 @@ const ModalRemove: React.FC<Props> = ({ openModalDelete, onDelete, blog }) => {
         open={true}
         onCancel={() => toggleModalRemove()}
         title={blog}
-        footer={[
-          <Button danger type="primary" onClick={onDelete}>
-            DELETE
-          </Button>,
-          <Button color="secondary" onClick={() => toggleModalRemove()}>
-            CANCEL
-          </Button>,
-        ]}
+        onOk={() => onDelete()}
       ></Modal>
     </div>
   )
