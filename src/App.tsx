@@ -17,6 +17,7 @@ import roleRouter from './libs/constants/router/role'
 import PermissionsRoute from './components/PermissionsRoute'
 import attendanceRouter from './libs/constants/router/attendance'
 import teamRouter from './libs/constants/router/team'
+import CheckInPage from './pages/checkIn'
 
 const queryClient = new QueryClient()
 
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<ProtectedRoute />}>
         <Route path="/" element={<HomePage />} key="home" />
         <Route path="/about" element={<AboutPage />} key="about" />
+        <Route path="/check-in" element={<CheckInPage />} key="check-in" />
         {profileRouter.map((router: any) => (
           <Route
             key={router.path}
