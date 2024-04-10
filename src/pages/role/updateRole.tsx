@@ -137,7 +137,7 @@ const UpdateRolePage = () => {
   }
   return (
     <MainLayout>
-      <h1 className="text-sky-500 flex justify-center">Sửa role </h1>
+      <h1 className="text-sky-500 flex justify-center">Update role </h1>
       {isloading ? (
         <Spin className="flex justify-center" key="spin" />
       ) : (
@@ -147,7 +147,7 @@ const UpdateRolePage = () => {
               <Form.Item
                 className="ml-10 mr-10"
                 name="role_name"
-                label="Tên role"
+                label="Role name"
                 initialValue={role?.role_name}
               >
                 <Input key="role_name" />
@@ -220,7 +220,7 @@ const UpdateRolePage = () => {
               onClick={handleSubmit}
               key="edit_button"
             >
-              Sửa role
+              Update role
             </Button>
             <Button
               type="dashed"
@@ -228,7 +228,7 @@ const UpdateRolePage = () => {
               onClick={handleCancel}
               key="cancel_button"
             >
-              Hủy
+              Cancel
             </Button>
           </Form.Item>
         </Form>

@@ -64,10 +64,6 @@ const Sidebar = () => {
             label: 'Add user',
             key: '/users/add',
           }),
-          checkChildrenSidebar(USER_IMPORT, {
-            label: 'Import user',
-            key: '/users/import/',
-          }),
         ],
       }),
 
@@ -113,10 +109,6 @@ const Sidebar = () => {
           checkChildrenSidebar(ATTENDANCE_LIST, {
             label: 'Attendances list',
             key: '/attendance',
-          }),
-          checkChildrenSidebar(ATTENDANCE_IMPORT, {
-            label: 'Import attendance',
-            key: '/attendance/import',
           }),
         ],
       }),

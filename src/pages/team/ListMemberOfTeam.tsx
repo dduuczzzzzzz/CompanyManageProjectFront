@@ -251,12 +251,9 @@ const ListMemberOfTeam = () => {
           onCancel={() => {
             setShowModalAddMem(false)
           }}
-          title={'ADD USERS'}
+          title={'Add users'}
           footer={[
-            <Button
-              style={{ backgroundColor: 'green' }}
-              onClick={() => AddUser()}
-            >
+            <Button type="primary" onClick={() => AddUser()}>
               Add
             </Button>,
             <Button

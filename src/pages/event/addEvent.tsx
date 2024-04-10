@@ -101,7 +101,6 @@ const AddEventPage = () => {
       }
 
       formData.append('name', data.name)
-      formData.append('link', data.link || '')
       formData.append('location', data.location || '')
       formData.append('description', data.details || '')
       formData.append('sendMail', data.sendMail)
@@ -159,19 +158,18 @@ const AddEventPage = () => {
       }
 
       return chunks.map((chunk, index) => (
-        <div className="flex justify-center ml-10 mb-4" key={index}>
+        <div className="flex justify-center mb-4" key={index}>
           {chunk.map((filee: any, fileIndex: number) => (
-            <div key={fileIndex}>
-              <p>Tên tệp: {filee.name}</p>
-              <Button
-                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
-                onClick={() => handleFileDelete(fileIndex)}
-              />
+            <div key={fileIndex} className="flex justify-center mb-4">
               <Avatar
                 src={URL.createObjectURL(filee)}
                 alt="avatar"
                 className="w-[150px] h-[150px] flex justify-center m-1"
               ></Avatar>
+              <Button
+                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
+                onClick={() => handleFileDelete(fileIndex)}
+              />
             </div>
           ))}
         </div>
@@ -185,7 +183,7 @@ const AddEventPage = () => {
   }
   return (
     <MainLayout>
-      <h1 className="text-sky-500 flex justify-center">Thêm event </h1>
+      <h1 className="text-sky-500 flex justify-center">Add event </h1>
       {isLoading ? (
         <Spin className="flex justify-center" />
       ) : (
@@ -196,7 +194,7 @@ const AddEventPage = () => {
                 <Form.Item
                   className="ml-10 mr-10"
                   name="name"
-                  label="Tên event"
+                  label="Event name"
                 >
                   <Input />
                 </Form.Item>
@@ -205,7 +203,7 @@ const AddEventPage = () => {
                 <Form.Item
                   className="ml-10 mr-10"
                   name="type"
-                  label="Loại event"
+                  label="Event type"
                   initialValue={1}
                 >
                   {options && (
@@ -223,7 +221,7 @@ const AddEventPage = () => {
                 <Form.Item
                   className=" ml-10 mr-10"
                   name="time"
-                  label="Thời gian tổ chức"
+                  label="Event time"
                 >
                   <RangePicker
                     className="w-full"
@@ -240,19 +238,12 @@ const AddEventPage = () => {
                   />
                 </Form.Item>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <Form.Item
                   className="ml-10 mr-10"
                   name="location"
-                  label="Địa điểm"
+                  label="Location"
                 >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item className="ml-10 mr-10" name="link" label="Link">
                   <Input />
                 </Form.Item>
               </Col>
@@ -281,7 +272,7 @@ const AddEventPage = () => {
               valuePropName="checked"
               initialValue="0"
             >
-              <Checkbox value="1">Gửi mail cho tất cả nhân viên</Checkbox>
+              <Checkbox value="1">Send mail to all people ?</Checkbox>
             </Form.Item>
             <Form.Item className="flex justify-center">
               <Button
@@ -290,14 +281,14 @@ const AddEventPage = () => {
                 htmlType="submit"
                 onClick={handleSubmit}
               >
-                Thêm event
+                Add event
               </Button>
               <Button
                 type="dashed"
                 className="w-[110px] text-white bg-red-500 m-5 items-center rounded-full"
                 onClick={handleCancel}
               >
-                Hủy
+                Cancel
               </Button>
             </Form.Item>
           </Form>

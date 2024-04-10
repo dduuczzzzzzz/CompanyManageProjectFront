@@ -87,31 +87,11 @@ const LoginPage = () => {
                 layout="vertical"
                 form={antForm}
               >
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[
-                    { required: true, message: 'Please input your email!' },
-                    {
-                      type: 'email',
-                      message: 'Please type email for your input',
-                    },
-                  ]}
-                >
+                <Form.Item label="Email" name="email">
                   <Input onChange={handleChange} />
                 </Form.Item>
 
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[
-                    { required: true, message: 'Please input your password!' },
-                    {
-                      min: 6,
-                      message: 'Password must be at least 6 characters',
-                    },
-                  ]}
-                >
+                <Form.Item label="Password" name="password">
                   <Input.Password onChange={handleChange} />
                 </Form.Item>
 

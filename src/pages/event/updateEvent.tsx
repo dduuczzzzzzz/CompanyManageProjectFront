@@ -127,7 +127,6 @@ const UpdateEventPage = () => {
       }
 
       formData.append('name', data.name)
-      formData.append('link', data.link || '')
       formData.append('location', data.location || '')
       formData.append('description', data.details || '')
       formData.append('sendMail', data.sendMail)
@@ -187,19 +186,18 @@ const UpdateEventPage = () => {
         chunks.push(chunk)
       }
       return chunks.map((chunk, index) => (
-        <div className="flex justify-center ml-10 mb-4" key={index}>
+        <div className="flex justify-start ml-10 mb-4" key={index}>
           {chunk.map((filee: any, fileIndex: number) => (
-            <div key={fileIndex}>
-              <p>Tên tệp: {filee.name}</p>
-              <Button
-                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
-                onClick={() => handleFileDelete(fileIndex)}
-              />
+            <div key={fileIndex} className="flex justify-center ml-10 mb-4">
               <Avatar
                 src={URL.createObjectURL(filee)}
                 alt="avatar"
                 className="w-[150px] h-[150px] flex justify-center m-1"
               ></Avatar>
+              <Button
+                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
+                onClick={() => handleFileDelete(fileIndex)}
+              />
             </div>
           ))}
         </div>
@@ -215,9 +213,14 @@ const UpdateEventPage = () => {
         chunks.push(chunk)
       }
       return chunks.map((chunk, index) => (
-        <div className="flex justify-center ml-10 mb-4" key={index}>
+        <div className="flex justify-start ml-10 mb-4" key={index}>
           {chunk.map((url: string, index: number) => (
             <div key={index} className="flex justify-center ml-10 mb-4">
+              <Avatar
+                src={url}
+                alt="avatar"
+                className="w-[150px] h-[150px] flex justify-center m-1"
+              ></Avatar>
               <Button
                 icon={<CloseOutlined className="w-[10px] h-[10px]" />}
                 onClick={() =>
@@ -227,11 +230,6 @@ const UpdateEventPage = () => {
                   )
                 }
               />
-              <Avatar
-                src={url}
-                alt="avatar"
-                className="w-[150px] h-[150px] flex justify-center m-1"
-              ></Avatar>
             </div>
           ))}
         </div>
@@ -250,7 +248,7 @@ const UpdateEventPage = () => {
   }
   return (
     <MainLayout>
-      <h1 className="text-sky-500 flex justify-center">Sửa event </h1>
+      <h1 className="text-sky-500 flex justify-center">Update event </h1>
       {isLoading ? (
         <Spin className="flex justify-center" />
       ) : (
@@ -260,7 +258,7 @@ const UpdateEventPage = () => {
               <Form.Item
                 className="ml-10 mr-10"
                 name="name"
-                label="Tên event"
+                label="Event name"
                 initialValue={res?.name}
               >
                 <Input />
@@ -270,7 +268,7 @@ const UpdateEventPage = () => {
               <Form.Item
                 className="ml-10 mr-10"
                 name="type"
-                label="Loại event"
+                label="Event type"
                 initialValue={res?.type}
               >
                 {options && (
@@ -288,7 +286,7 @@ const UpdateEventPage = () => {
               <Form.Item
                 className=" ml-10 mr-10"
                 name="time"
-                label="Thời gian tổ chức"
+                label="Event time"
                 initialValue={[dayjs(res?.start_time), dayjs(res?.end_time)]}
               >
                 <RangePicker
@@ -306,24 +304,12 @@ const UpdateEventPage = () => {
                 />
               </Form.Item>
             </Col>
-          </Row>
-          <Row>
             <Col span={12}>
               <Form.Item
                 className="ml-10 mr-10"
                 name="location"
-                label="Địa điểm"
+                label="Location"
                 initialValue={res?.location}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                className="ml-10 mr-10"
-                name="link"
-                label="Link"
-                initialValue={res?.link}
               >
                 <Input />
               </Form.Item>
@@ -338,12 +324,12 @@ const UpdateEventPage = () => {
             <Input.TextArea rows={3} />
           </Form.Item>
 
-          <p className="ml-10 mr-10 ">Ảnh cũ:</p>
-          <div className="justify-center ml-10 mb-4">{renderOleFile()}</div>
+          <p className="ml-10 mr-10 ">Image: </p>
+          <div className="justify-start ml-10 mb-4">{renderOleFile()}</div>
 
-          <p className="ml-10 mr-10 ">Thêm ảnh mới:</p>
+          <p className="ml-10 mr-10 ">Add image:</p>
           <div className="justify-center ml-10 mb-4">{renderFilePreview()}</div>
-          <div className="flex justify-center ml-10 mb-4">
+          <div className="flex justify-start ml-10 mb-4">
             <input
               ref={inputRef}
               type="file"
@@ -357,7 +343,7 @@ const UpdateEventPage = () => {
             valuePropName="checked"
             initialValue="0"
           >
-            <Checkbox value="1">Gửi mail cho tất cả nhân viên</Checkbox>
+            <Checkbox value="1">Send mail to all people ?</Checkbox>
           </Form.Item>
           <Form.Item className="flex justify-center">
             <Button
@@ -366,14 +352,14 @@ const UpdateEventPage = () => {
               htmlType="submit"
               onClick={handleSubmit}
             >
-              Sửa event
+              Update event
             </Button>
             <Button
               type="dashed"
               className="w-[110px] text-white bg-red-500 m-5 items-center rounded-full"
               onClick={handleCancel}
             >
-              Hủy
+              Cancel
             </Button>
           </Form.Item>
         </Form>
