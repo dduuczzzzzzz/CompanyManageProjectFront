@@ -132,7 +132,6 @@ const TeamPage = () => {
             duration: 5,
             message: 'Update team successfully',
           })
-          setShowAlert(true)
         }, 50)
       }
     } catch (error) {

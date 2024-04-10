@@ -14,14 +14,6 @@ import { react } from '@babel/types'
 
 const { Option } = Select
 
-const summitButtonLayout = {
-  wrapperCol: {
-    sm: {
-      offset: 10,
-    },
-  },
-}
-
 const FormPost = (props: any) => {
   const { id } = props
   const { userData } = props
@@ -84,7 +76,10 @@ const FormPost = (props: any) => {
       'address',
       values.address == null || undefined ? ' ' : values.address,
     )
-    formData.append('phone_number', values.phone_number)
+    formData.append(
+      'phone_number',
+      values.phone_number ? values.phone_number : '',
+    )
 
     if (selectedFile) {
       formData.append('avatar', selectedFile)
@@ -154,14 +149,14 @@ const FormPost = (props: any) => {
         className={'w-3/4'}
         scrollToFirstError
       >
-        <Form.Item {...summitButtonLayout}>
+        {/* <Form.Item {...summitButtonLayout}>
           <UploadPicture
             avatar={userData?.avatar}
             selectedFile={selectedFile}
             setSelectedFile={setSelectedFile}
             setIsDeleteAvt={setIsDeleteAvt}
           />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
           name="name"
@@ -231,40 +226,21 @@ const FormPost = (props: any) => {
                     required: true,
                     message: 'Please confirm your password!',
                   },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value || getFieldValue('password') === value) {
-                        return Promise.resolve()
-                      }
-                      return Promise.reject(
-                        new Error(
-                          'The new password that you entered do not match!',
-                        ),
-                      )
-                    },
-                  }),
                 ]
           }
         >
           <Input.Password />
         </Form.Item>
 
-        <Form.Item
-          name="gender"
-          label="Gender"
-          rules={[{ required: true, message: 'Please select gender!' }]}
-        >
+        <Form.Item name="gender" label="Gender">
           <Select placeholder="select your gender">
             <Option value="1">Male</Option>
             <Option value="2">Female</Option>
+            <Option value="3">Other</Option>
           </Select>
         </Form.Item>
 
-        <Form.Item
-          name="status"
-          label="Status"
-          rules={[{ required: true, message: 'Please select status!' }]}
-        >
+        <Form.Item name="status" label="Status">
           <Select placeholder="select your status">
             <Option value="1">Active</Option>
             <Option value="0">Block</Option>
@@ -295,10 +271,6 @@ const FormPost = (props: any) => {
           name="phone_number"
           label="Phone Number"
           rules={[
-            {
-              required: true,
-              message: 'Please input your phone!',
-            },
             {
               pattern: new RegExp(/^(0[1-9][0-9]{8})$/, 'g'),
               message: 'This is not a phone number',
