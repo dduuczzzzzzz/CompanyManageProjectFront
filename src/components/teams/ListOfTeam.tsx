@@ -255,26 +255,47 @@ const ListOfTeam: React.FC<Props> = ({
         <Table
           columns={lists}
           dataSource={listTeam}
-          pagination={false}
           rowKey="id"
+          pagination={{
+            defaultPageSize: 10,
+            total: total,
+            onChange: (page, pageSize) => {
+              setFilter((filter: any) => ({
+                ...filter,
+                page: page,
+                limit: pageSize,
+              }))
+            },
+          }}
         />
       ) : (
         <Table
           columns={listsMain}
           dataSource={listTeam}
-          pagination={false}
           rowKey="id"
+          pagination={{
+            defaultPageSize: 10,
+            total: total,
+            current: Number(filter.page),
+            onChange: (page, pageSize) => {
+              setFilter((filter: any) => ({
+                ...filter,
+                page: page,
+                limit: pageSize,
+              }))
+            },
+          }}
         />
       )}
 
-      <Pagination
+      {/* <Pagination
         showQuickJumper
         defaultCurrent={1}
         total={total}
         showSizeChanger={true}
         onChange={onChange}
         style={{ marginLeft: 500, marginTop: 10 }}
-      />
+      /> */}
     </>
   )
 }

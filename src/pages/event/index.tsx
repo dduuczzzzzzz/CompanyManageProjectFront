@@ -194,7 +194,7 @@ const EventPage = () => {
       </Button>
       <div className="flex mt-8">
         <Search
-          placeholder="event name"
+          placeholder="Search event name"
           className="w-[30%]"
           onSearch={onSearch}
           enterButton
@@ -319,9 +319,9 @@ const EventPage = () => {
                     </div>
                     <div className="w-[100%] h-[90%] ">
                       <p>{item?.description}</p>
-                      <p>Địa điểm: {item?.location}</p>
+                      <p>Location: {item?.location}</p>
                       <p>
-                        Thời gian: {item?.start_time} - {item?.end_time}
+                        Tine: {item?.start_time} - {item?.end_time}
                       </p>
                       {item?.link && <a href={item?.link}>link chi tiết</a>}
                       <br />

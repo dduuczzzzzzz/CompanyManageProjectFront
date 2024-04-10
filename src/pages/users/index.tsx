@@ -32,23 +32,23 @@ const ListUsers = () => {
     role: '',
   })
   const [isLoading, setIsLoading] = useState<boolean>()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<any>(null)
+
   const navigate = useNavigate()
   const handleDelete = async (key: string) => {
     await userApiDelete({ setIdUser, setIsLoading }, key)
+    setIsModalOpen(false)
   }
 
-  const showDeleteConfirm = (record: any) => {
-    Modal.confirm({
-      title: 'Delete Record',
-      content: `Are you sure you want to delete ${record.name}?`,
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk() {
-        handleDelete(record.id)
-      },
-    })
+  const showModal = () => {
+    setIsModalOpen(true)
   }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+
   useEffect(() => {
     setIsLoading(true)
     const url = new URLSearchParams(filter)
@@ -175,7 +175,13 @@ const ListUsers = () => {
             USER_DELETE.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Link to="" onClick={() => showDeleteConfirm(record)}>
+              <Link
+                to=""
+                onClick={() => {
+                  setCurrentUserId(record.id)
+                  showModal()
+                }}
+              >
                 <Button type="primary" danger className="rounded-full">
                   <DeleteOutlined />
                 </Button>
@@ -212,11 +218,27 @@ const ListUsers = () => {
               pagination={{
                 defaultPageSize: 10,
                 total: totalUser,
+                current: filter.page,
                 onChange: (page) => {
                   setFilter((filter: any) => ({ ...filter, page: page }))
                 },
               }}
             />
+            <Modal
+              title="Delete User"
+              open={isModalOpen}
+              onOk={() => handleDelete(currentUserId)}
+              onCancel={handleCancel}
+            >
+              <p>
+                Are you sure you want to delete&nbsp;
+                {currentUserId &&
+                users.find((user) => user.id === currentUserId)
+                  ? users.find((user) => user.id === currentUserId)?.name
+                  : ''}
+                ?
+              </p>
+            </Modal>
           </>
         )}
       </>

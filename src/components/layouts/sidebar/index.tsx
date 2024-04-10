@@ -65,10 +65,6 @@ const Sidebar = () => {
             label: 'Add user',
             key: '/users/add',
           }),
-          checkChildrenSidebar(USER_IMPORT, {
-            label: 'Import user',
-            key: '/users/import/',
-          }),
         ],
       }),
 
@@ -92,10 +88,6 @@ const Sidebar = () => {
         icon: <TeamOutlined />,
         label: 'Teams',
         children: [
-          checkChildrenSidebar(TEAM_ADD, {
-            label: 'Create New Team',
-            key: '/teams/create',
-          }),
           checkChildrenSidebar(TEAM_LIST, {
             label: 'Main Teams',
             key: '/teams/',
@@ -103,6 +95,10 @@ const Sidebar = () => {
           checkChildrenSidebar(TEAM_LIST_SUB, {
             label: 'Sub Teams',
             key: '/teams/sub-teams',
+          }),
+          checkChildrenSidebar(TEAM_ADD, {
+            label: 'Create New Team',
+            key: '/teams/create',
           }),
         ],
       }),
@@ -114,10 +110,6 @@ const Sidebar = () => {
           checkChildrenSidebar(ATTENDANCE_LIST, {
             label: 'Attendances list',
             key: '/attendance',
-          }),
-          checkChildrenSidebar(ATTENDANCE_IMPORT, {
-            label: 'Import attendance',
-            key: '/attendance/import',
           }),
         ],
       }),

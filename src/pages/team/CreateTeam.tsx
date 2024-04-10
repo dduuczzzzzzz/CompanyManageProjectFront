@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Select, Spin, message } from 'antd'
+import { Button, Form, Input, Select, Spin, message, notification } from 'antd'
 import MainLayout from '../../components/layouts/main'
 import axiosInstance from '../../services/request/base'
 import { User, Team } from '../../components/teams/interface'
@@ -119,7 +119,11 @@ const CreateTeam = () => {
       .then(() => {
         formRef.current?.resetFields()
         setTimeout(() => {
-          message.success('Create Team Successful')
+          notification['success']({
+            key: 'add team success',
+            duration: 5,
+            message: 'Add team successfully',
+          })
           setTimeout(() => {
             navigate(`/teams`)
           }, 50)
@@ -130,11 +134,33 @@ const CreateTeam = () => {
           console.log(error.response)
           if (Number(error.response.status) === 422) {
             setTimeout(() => {
-              message.error(error.response.data.errors.name)
+              notification['error']({
+                duration: 5,
+                message: 'Error',
+                description: (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: error.response.data.errors.name,
+                    }}
+                    className="text-red-500"
+                  />
+                ),
+              })
             }, 50)
           } else if (Number(error.response.status) === 404) {
             setTimeout(() => {
-              message.error(error.response.data.message)
+              notification['error']({
+                duration: 5,
+                message: 'Error',
+                description: (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: error.response.data.message,
+                    }}
+                    className="text-red-500"
+                  />
+                ),
+              })
             }, 50)
           }
         }

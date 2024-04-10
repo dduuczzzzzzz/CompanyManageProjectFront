@@ -1,6 +1,6 @@
 import Avatar from 'antd/es/avatar/avatar'
 import { Link } from 'react-router-dom'
-import logo from '../../../assets/user-profile.png'
+import logo from '../../../assets/uet.png'
 const SideBarLogo = () => {
   return (
     <Link to="/" className="w-200 text-black">

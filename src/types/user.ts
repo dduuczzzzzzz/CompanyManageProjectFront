@@ -16,6 +16,7 @@ export type FilterType = {
   gender: string
   status: string
   role: string
+  page?: any
 }
 export type FileType = {
   // value: any
