@@ -10,5 +10,6 @@
     "source.addMissingImports",
     "source.fixAll.eslint"
   ],
-  "prettier.ignorePath": ".gitignore"
+  "prettier.ignorePath": ".gitignore",
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
