@@ -7,7 +7,6 @@ import {
   CalendarOutlined,
   AuditOutlined,
   CarryOutOutlined,
-  VideoCameraOutlined,
 } from '@ant-design/icons'
 import { Layout, Menu } from 'antd'
 import SideBarLogo from './SideBarLogo'
@@ -128,12 +127,6 @@ const Sidebar = () => {
           }),
         ],
       }),
-      {
-        key: '/check-in',
-        icon: <VideoCameraOutlined />,
-        label: 'Check In',
-        children: null,
-      },
       checkParentSidebar(PROFILE, {
         key: '/profile',
         icon: <ProfileOutlined />,
