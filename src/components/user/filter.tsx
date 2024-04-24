@@ -37,13 +37,11 @@ const Filter = ({
           />
         </div>
         <div className={'mr-6 inline'}>
-          <label htmlFor="" className={'font-semibold mr-2'}>
-            Gender
-          </label>
           <Select
+            placeholder={'Select Gender'}
             onChange={(event) => handleSearch('gender', event)}
-            value={filterValue?.gender}
-            className={'w-28'}
+            // value={filterValue?.gender}
+            className={'w-32'}
             allowClear
             options={[
               { value: '2', label: 'Female' },
@@ -52,13 +50,11 @@ const Filter = ({
           />
         </div>
         <div className={'mr-6 inline'}>
-          <label htmlFor="" className={'font-semibold mr-2'}>
-            Status
-          </label>
           <Select
+            placeholder={'Select Status'}
             onChange={(event) => handleSearch('status', event)}
-            value={filterValue?.status}
-            className={'w-28'}
+            // value={filterValue?.status}
+            className={'w-32'}
             allowClear
             options={[
               { value: '1', label: 'Actice' },
@@ -67,14 +63,12 @@ const Filter = ({
           />
         </div>
         <div className={'mr-6 inline'}>
-          <label htmlFor="" className={'font-semibold mr-2'}>
-            Role
-          </label>
           <RoleSelect
             className=""
             handleCHange={handleSearch}
             setRole=""
             valueInput=""
+            placeHolder="Select role"
           />
         </div>
       </div>

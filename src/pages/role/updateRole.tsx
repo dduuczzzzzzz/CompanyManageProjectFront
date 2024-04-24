@@ -101,9 +101,9 @@ const UpdateRolePage = () => {
     try {
       if (id) {
         const response = await getRole(parseInt(id))
-        if (response.data.data.role_name === ROLES.ADMIN) {
-          navigate('/role/')
-        }
+        // if (response.data.data.role_name === ROLES.ADMIN) {
+        //   navigate('/role/')
+        // }
         setRole(response.data.data)
         setCheckedItems(response.data.data.role_permissions)
       }

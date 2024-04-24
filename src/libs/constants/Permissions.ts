@@ -38,3 +38,4 @@ export const ATTENDANCE_IMPORT = [
   'attendance.exportTemplate',
 ]
 export const ATTENDANCE_EXPORT_TEMPLATE = ['attendance.exportTemplate']
+export const SESSION_LIST = ['session.list']

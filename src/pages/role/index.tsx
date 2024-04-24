@@ -101,8 +101,7 @@ const RolePage = () => {
         let cr_id = id
         return (
           <>
-            {cr_id !== ROLES_ID.ADMIN_ID &&
-              permissionsInfo &&
+            {permissionsInfo &&
               ROLE_UPDATE.every((element: string) =>
                 permissionsInfo.includes(element),
               ) && (
