@@ -274,7 +274,7 @@ const UpdateEventPage = () => {
                 {options && (
                   <Select
                     options={options}
-                    placeholder="type event"
+                    placeholder="Event type"
                     className="w-[70%] "
                   />
                 )}

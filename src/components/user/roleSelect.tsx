@@ -9,11 +9,13 @@ export const RoleSelect = ({
   handleCHange,
   valueInput,
   setRole,
+  placeHolder,
 }: {
   className: string
   handleCHange: any
   valueInput: string
   setRole: any
+  placeHolder?: string
 }) => {
   const [roles, setRoles] = useState([])
 
@@ -28,6 +30,7 @@ export const RoleSelect = ({
   return (
     <>
       <Select
+        placeholder={placeHolder}
         className={'w-28' + className}
         allowClear
         onChange={(event) => {

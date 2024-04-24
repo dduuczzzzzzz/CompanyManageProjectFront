@@ -200,20 +200,17 @@ const EventPage = () => {
           enterButton
         />
         <div className="w-[30%] ml-10">
-          <span className="font-bold">Type</span>
           {options && (
             <Select
               options={options}
               onChange={onSelect}
-              placeholder="type event"
-              className="w-[70%] ml-2"
-              defaultValue="all"
+              placeholder="Event type"
+              className="w-[90%] ml-2"
               allowClear
             />
           )}
         </div>
         <div className="w-[30%] ml-10 flex items-center">
-          <span className="font-bold">Date </span>
           {/* <Input
             className="ml-5"
             type="datetime-local"

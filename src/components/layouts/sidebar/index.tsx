@@ -26,6 +26,7 @@ import {
   PROFILE,
   ROLE_ADD,
   ROLE_LIST,
+  SESSION_LIST,
   TEAM_ADD,
   TEAM_LIST,
   TEAM_LIST_SUB,
@@ -128,12 +129,31 @@ const Sidebar = () => {
           }),
         ],
       }),
-      {
-        key: '/check-in',
+      checkParentSidebar([], {
+        key: 'sessions',
         icon: <VideoCameraOutlined />,
-        label: 'Check In',
-        children: null,
-      },
+        label: 'Session',
+        children: [
+          {
+            label: 'Check In',
+            key: '/session/check-in',
+          },
+          {
+            label: 'Check Out',
+            key: '/session/check-out',
+          },
+          checkChildrenSidebar(SESSION_LIST, {
+            label: 'Session list',
+            key: '/session',
+          }),
+        ],
+      }),
+      // {
+      //   key: '/check-in',
+      //   icon: <VideoCameraOutlined />,
+      //   label: 'Session',
+      //   children: null,
+      // },
       checkParentSidebar(PROFILE, {
         key: '/profile',
         icon: <ProfileOutlined />,
