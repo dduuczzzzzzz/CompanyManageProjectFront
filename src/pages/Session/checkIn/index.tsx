@@ -1,6 +1,8 @@
 import { notification } from 'antd'
 import MainLayout from '../../../components/layouts/main'
 import { upsertSessionAPI } from '../../../services/request/session'
+import TestCam from './TestCam'
+import CheckInWebCam from './webCam'
 
 const CheckInPage = () => {
   const handleCheckIn = async () => {
@@ -41,6 +43,8 @@ const CheckInPage = () => {
     <MainLayout>
       <p>CheckIN pages</p>
       <button onClick={handleCheckIn}>Check In</button>
+      {/* <TestCam /> */}
+      <CheckInWebCam />
     </MainLayout>
   )
 }
