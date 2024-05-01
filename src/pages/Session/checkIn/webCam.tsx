@@ -13,7 +13,10 @@ const CheckInWebCam = () => {
   const MOBILE_NET_INPUT_WIDTH = 224
   const MOBILE_NET_INPUT_HEIGHT = 224
   const STOP_DATA_GATHER = -1
-  const CLASS_NAMES: any[] = [0]
+  const CLASS_NAMES: any[] = []
+  for (let i = 0; i <= 100; i++) {
+    CLASS_NAMES.push(i)
+  }
   // init model
   const [mobilenet, setMobileNet] = useState<any>()
   const [loading, setLoading] = useState<boolean>(false)
@@ -29,7 +32,9 @@ const CheckInWebCam = () => {
   model.add(
     tf.layers.dense({ inputShape: [1024], units: 128, activation: 'relu' }),
   )
-  model.add(tf.layers.dense({ units: 1, activation: 'softmax' }))
+  model.add(
+    tf.layers.dense({ units: CLASS_NAMES.length, activation: 'softmax' }),
+  )
 
   model.summary()
 
@@ -39,7 +44,7 @@ const CheckInWebCam = () => {
     optimizer: 'adam',
     // Use the correct loss function. If 2 classes of data, must use binaryCrossentropy.
     // Else categoricalCrossentropy is used if more than 2 classes.
-    loss: 'binaryCrossentropy',
+    loss: 'categoricalCrossentropy',
     // As this is a classification problem you can record accuracy in the logs too!
     metrics: ['accuracy'],
   })
@@ -84,10 +89,10 @@ const CheckInWebCam = () => {
     predict = false
     tf.util.shuffleCombo(trainingDataInputs, trainingDataOutputs)
     let outputsAsTensor = tf.tensor1d(trainingDataOutputs, 'int32')
-    // let oneHotOutputs = tf.oneHot(outputsAsTensor, 2)
+    let oneHotOutputs = tf.oneHot(outputsAsTensor, CLASS_NAMES.length)
     let inputsAsTensor = tf.stack(trainingDataInputs)
 
-    let results = await model.fit(inputsAsTensor, outputsAsTensor, {
+    let results = await model.fit(inputsAsTensor, oneHotOutputs, {
       shuffle: true,
       batchSize: 5,
       epochs: 10,
@@ -95,7 +100,7 @@ const CheckInWebCam = () => {
     })
 
     outputsAsTensor.dispose()
-    // oneHotOutputs.dispose()
+    oneHotOutputs.dispose()
     inputsAsTensor.dispose()
     predict = true
     // predictLoop()
@@ -121,10 +126,18 @@ const CheckInWebCam = () => {
         )
         let prediction: any = model.predict(imageFeatures) as tf.Tensor
         prediction = prediction.squeeze()
-        console.log('Prediction: ', prediction.arraySync())
-        let predictedClassIndex = tf.argMax(prediction, -1).dataSync()[0]
-        let predictedName = CLASS_NAMES[predictedClassIndex] // Assuming classNames is an array of class names
-        console.log('Predicted Name:', predictedName)
+        console.log('Prediction: ', prediction)
+        // let predictedClassIndex = tf.argMax(prediction, -1).dataSync()[0]
+        // let predictedName = CLASS_NAMES[predictedClassIndex] // Assuming classNames is an array of class names
+        // console.log('Predicted Name:', predictedName)
+        let highestIndex = prediction.argMax().arraySync()
+        console.log('Index: ', highestIndex)
+        let predictionArray = prediction.arraySync()
+        console.log(
+          'Accurancy: ',
+          Math.floor(predictionArray[highestIndex] * 100),
+        )
+        console.log('Predict user id: ', CLASS_NAMES[highestIndex])
       }
     })
 
@@ -154,7 +167,7 @@ const CheckInWebCam = () => {
     dataCollectorButtons[i].addEventListener('mousedown', gatherDataForClass)
     dataCollectorButtons[i].addEventListener('mouseup', gatherDataForClass)
     // Populate the human readable names for classes.
-    CLASS_NAMES.push(dataCollectorButtons[i].getAttribute('data-name'))
+    // CLASS_NAMES.push(dataCollectorButtons[i].getAttribute('data-name'))
   }
 
   function gatherDataForClass() {
