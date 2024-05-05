@@ -41,8 +41,7 @@ const CheckInPage = () => {
 
   return (
     <MainLayout>
-      <p>CheckIN pages</p>
-      <button onClick={handleCheckIn}>Check In</button>
+      {/* <button onClick={handleCheckIn}>Check In</button> */}
       {/* <TestCam /> */}
       <CheckInWebCam />
     </MainLayout>

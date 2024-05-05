@@ -1,6 +1,8 @@
 import * as tf from '@tensorflow/tfjs'
 import { notification } from 'antd'
+import { error } from 'console'
 import { useEffect, useState } from 'react'
+import Spinner from '../../../components/user/spin'
 import { getUser } from '../../../libs/helpers/getLocalStorage'
 
 const CheckInWebCam = () => {
@@ -19,7 +21,9 @@ const CheckInWebCam = () => {
   }
   // init model
   const [mobilenet, setMobileNet] = useState<any>()
-  const [loading, setLoading] = useState<boolean>(false)
+  const [savedModel, setSavedModel] = useState<any>()
+  const [model, setModel] = useState<any>()
+  const [loading, setLoading] = useState<boolean>(true)
   const user = getUser()
   // let mobilenet: any = undefined
   let gatherDataState: any = STOP_DATA_GATHER
@@ -28,30 +32,16 @@ const CheckInWebCam = () => {
   let trainingDataOutputs: any[] = []
   let examplesCount: any[] = []
   let predict = false
-  let model = tf.sequential()
-  model.add(
-    tf.layers.dense({ inputShape: [1024], units: 128, activation: 'relu' }),
-  )
-  model.add(
-    tf.layers.dense({ units: CLASS_NAMES.length, activation: 'softmax' }),
-  )
-
-  model.summary()
-
-  // Compile the model with the defined optimizer and specify a loss function to use.
-  model.compile({
-    // Adam changes the learning rate over time which is useful.
-    optimizer: 'adam',
-    // Use the correct loss function. If 2 classes of data, must use binaryCrossentropy.
-    // Else categoricalCrossentropy is used if more than 2 classes.
-    loss: 'categoricalCrossentropy',
-    // As this is a classification problem you can record accuracy in the logs too!
-    metrics: ['accuracy'],
-  })
 
   ENABLE_CAM_BUTTON && ENABLE_CAM_BUTTON.addEventListener('click', enableCam)
   TRAIN_BUTTON && TRAIN_BUTTON.addEventListener('click', trainAndPredict)
   RESET_BUTTON && RESET_BUTTON.addEventListener('click', reset)
+
+  console.log(VIDEO)
+  if (VIDEO) {
+    // setLoading(false)
+    enableCam()
+  }
 
   // check if has web media
   function hasGetUserMedia() {
@@ -87,23 +77,32 @@ const CheckInWebCam = () => {
   // train and predict model
   async function trainAndPredict() {
     predict = false
-    tf.util.shuffleCombo(trainingDataInputs, trainingDataOutputs)
-    let outputsAsTensor = tf.tensor1d(trainingDataOutputs, 'int32')
-    let oneHotOutputs = tf.oneHot(outputsAsTensor, CLASS_NAMES.length)
-    let inputsAsTensor = tf.stack(trainingDataInputs)
+    try {
+      tf.util.shuffleCombo(trainingDataInputs, trainingDataOutputs)
+      let outputsAsTensor = tf.tensor1d(trainingDataOutputs, 'int32')
+      let oneHotOutputs = tf.oneHot(outputsAsTensor, CLASS_NAMES.length)
+      let inputsAsTensor = tf.stack(trainingDataInputs)
 
-    let results = await model.fit(inputsAsTensor, oneHotOutputs, {
-      shuffle: true,
-      batchSize: 5,
-      epochs: 10,
-      callbacks: { onEpochEnd: logProgress },
-    })
+      let results = await model.fit(inputsAsTensor, oneHotOutputs, {
+        shuffle: true,
+        batchSize: 5,
+        epochs: 10,
+        callbacks: { onEpochEnd: logProgress },
+      })
 
-    outputsAsTensor.dispose()
-    oneHotOutputs.dispose()
-    inputsAsTensor.dispose()
-    predict = true
-    // predictLoop()
+      outputsAsTensor.dispose()
+      oneHotOutputs.dispose()
+      inputsAsTensor.dispose()
+      predict = true
+      // predictLoop()
+      const saveResult = await model.save('localstorage://my-model-1')
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async function saveModelToFile() {
+    await model.save('downloads://my-model')
   }
 
   function logProgress(epoch: any, logs: any) {
@@ -111,7 +110,6 @@ const CheckInWebCam = () => {
   }
 
   function predictLoop() {
-    console.log('Predict')
     tf.tidy(function () {
       if (VIDEO) {
         let videoFrameAsTensor: any = tf.browser.fromPixels(VIDEO).div(255)
@@ -124,6 +122,23 @@ const CheckInWebCam = () => {
         let imageFeatures: any = mobilenet.predict(
           resizedTensorFrame.expandDims(),
         )
+        if (savedModel) {
+          let prediction: any = savedModel.predict(imageFeatures) as tf.Tensor
+          prediction = prediction.squeeze()
+          console.log('Prediction: ', prediction)
+          // let predictedClassIndex = tf.argMax(prediction, -1).dataSync()[0]
+          // let predictedName = CLASS_NAMES[predictedClassIndex] // Assuming classNames is an array of class names
+          // console.log('Predicted Name:', predictedName)
+          let highestIndex = prediction.argMax().arraySync()
+          console.log('Index: ', highestIndex)
+          let predictionArray = prediction.arraySync()
+          console.log(
+            'Accurancy: ',
+            Math.floor(predictionArray[highestIndex] * 100),
+          )
+          console.log('Predict user id: ', CLASS_NAMES[highestIndex])
+          return
+        }
         let prediction: any = model.predict(imageFeatures) as tf.Tensor
         prediction = prediction.squeeze()
         console.log('Prediction: ', prediction)
@@ -183,7 +198,7 @@ const CheckInWebCam = () => {
   }
 
   function dataGatherLoop() {
-    if (videoPlaying && gatherDataState !== STOP_DATA_GATHER) {
+    if (videoPlaying && gatherDataState !== STOP_DATA_GATHER && mobilenet) {
       let imageFeatures = tf.tidy(function () {
         let videoFrameAsTensor = tf.browser.fromPixels(VIDEO)
         let resizedTensorFrame = tf.image.resizeBilinear(
@@ -204,7 +219,10 @@ const CheckInWebCam = () => {
         examplesCount[gatherDataState] = 0
       }
       examplesCount[gatherDataState]++
-
+      if (examplesCount[gatherDataState] >= 10) {
+        gatherDataState = STOP_DATA_GATHER
+        return
+      }
       // STATUS.innerText = ''
       // for (let n = 0; n < CLASS_NAMES.length; n++) {
       //   STATUS.innerText +=
@@ -218,11 +236,27 @@ const CheckInWebCam = () => {
    * Loads the MobileNet model and warms it up so ready for use.
    **/
   async function loadMobileNetFeatureModel() {
+    console.log(JSON.stringify(await tf.io.listModels()))
+
+    try {
+      const savedModel = await tf.loadLayersModel('localstorage://my-model-1')
+      if (savedModel) {
+        setSavedModel(savedModel)
+      } else {
+        setSavedModel(undefined)
+      }
+    } catch (err) {
+      console.log('Error loading model from local storage:', err)
+    }
+    // setMobileNet(savedModel)
+    // setLoading(true)
     const URL =
       'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1'
 
     const mobilenetModel = await tf.loadGraphModel(URL, { fromTFHub: true })
+    console.log('Mobile Net load')
     setMobileNet(mobilenetModel)
+    setLoading(false)
     // STATUS.innerText = 'MobileNet v3 loaded successfully!'
 
     // tf.tidy(function () {
@@ -235,7 +269,49 @@ const CheckInWebCam = () => {
 
   useEffect(() => {
     loadMobileNetFeatureModel()
+    // setLoading(true)
   }, [])
+
+  useEffect(() => {
+    if (savedModel) {
+      console.log('Save model sum: ')
+      savedModel.summary()
+
+      // Compile the model with the defined optimizer and specify a loss function to use.
+      savedModel.compile({
+        // Adam changes the learning rate over time which is useful.
+        optimizer: 'adam',
+        // Use the correct loss function. If 2 classes of data, must use binaryCrossentropy.
+        // Else categoricalCrossentropy is used if more than 2 classes.
+        loss: 'categoricalCrossentropy',
+        // As this is a classification problem you can record accuracy in the logs too!
+        metrics: ['accuracy'],
+      })
+      setModel(savedModel)
+      return
+    }
+    let model = tf.sequential()
+    model.add(
+      tf.layers.dense({ inputShape: [1024], units: 128, activation: 'relu' }),
+    )
+    model.add(
+      tf.layers.dense({ units: CLASS_NAMES.length, activation: 'softmax' }),
+    )
+
+    model.summary()
+
+    // Compile the model with the defined optimizer and specify a loss function to use.
+    model.compile({
+      // Adam changes the learning rate over time which is useful.
+      optimizer: 'adam',
+      // Use the correct loss function. If 2 classes of data, must use binaryCrossentropy.
+      // Else categoricalCrossentropy is used if more than 2 classes.
+      loss: 'categoricalCrossentropy',
+      // As this is a classification problem you can record accuracy in the logs too!
+      metrics: ['accuracy'],
+    })
+    setModel(model)
+  }, [savedModel])
 
   useEffect(() => {
     // Warm up the model by passing zeros through it once.
@@ -253,23 +329,29 @@ const CheckInWebCam = () => {
 
   return (
     <>
-      <video id="webcam" autoPlay muted></video>
+      <div className="flex justify-center items-center w-full mt-2 mb-4">
+        <video id="webcam" autoPlay muted></video>
+      </div>
 
-      <button id="enableCam" onClick={enableCam}>
-        Enable Webcam
-      </button>
-      <button className="dataCollector" data-1hot="0" data-name="Class 1">
-        Gather Data
-      </button>
-      <button id="train" onClick={trainAndPredict}>
-        Train &amp; Predict!
-      </button>
-      <button id="predict" onClick={predictLoop}>
-        Predict!
-      </button>
-      <button id="reset" onClick={reset}>
-        Reset
-      </button>
+      <div>
+        {/* <button id="enableCam" onClick={enableCam}>
+          Enable Webcam
+        </button> */}
+        <button className="dataCollector" data-1hot="0" data-name="Class 1">
+          Gather Data
+        </button>
+        <button id="train">Train &amp; Predict!</button>
+        <button id="predict" onClick={predictLoop}>
+          Predict!
+        </button>
+        <button id="reset" onClick={reset}>
+          Reset
+        </button>
+        <button id="save-file" onClick={saveModelToFile}>
+          Save Model to FILE
+        </button>
+      </div>
+      {loading && <Spinner />}
     </>
   )
 }
