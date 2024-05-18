@@ -17,7 +17,11 @@ import { ParamsRole, Role } from '../../types/role'
 import { deleteRole, role } from '../../services/role'
 import { ROLES_ID } from '../../libs/constants/roles'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
-import { ROLE_DELETE, ROLE_UPDATE } from '../../libs/constants/Permissions'
+import {
+  ROLE_ADD,
+  ROLE_DELETE,
+  ROLE_UPDATE,
+} from '../../libs/constants/Permissions'
 import { key } from 'localforage'
 import { roles } from 'aria-query'
 const RolePage = () => {
@@ -196,15 +200,20 @@ const RolePage = () => {
         <Spin className="flex justify-center" />
       ) : (
         <>
-          <Button
-            type="primary"
-            className="mb-5 bg-green-500 float-right focus:bg-green-400"
-            onClick={() => {
-              navigate('/role/add')
-            }}
-          >
-            Create New Role
-          </Button>
+          {permissionsInfo &&
+            ROLE_ADD.every((element: string) =>
+              permissionsInfo.includes(element),
+            ) && (
+              <Button
+                type="primary"
+                className="mb-5 bg-green-500 float-right focus:bg-green-400"
+                onClick={() => {
+                  navigate('/role/add')
+                }}
+              >
+                Create New Role
+              </Button>
+            )}
           <Table
             columns={columns}
             dataSource={data}

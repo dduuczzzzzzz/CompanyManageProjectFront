@@ -11,11 +11,13 @@ import {
   Spin,
   Avatar,
   notification,
+  DatePicker,
 } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { LIST_GENDER } from '../../libs/constants/Options'
 import { validationSchema } from '../../validations/editProfile'
+import dayjs from 'dayjs'
 
 const editProfileRules = {
   async validator({ field }: { field: string }, value: any) {
@@ -33,9 +35,10 @@ const UpdateProfilePage = () => {
     }
   }
   const inputRef = useRef<any>(null)
-  const [res, setRes] = useState<any>(null)
+  const [res, setRes] = useState<any>()
   const [antForm] = Form.useForm()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+
   useEffect(() => {
     const handleGetProfile = async () => {
       setIsLoading(true)
@@ -62,25 +65,30 @@ const UpdateProfilePage = () => {
         formData.append('avatar', fileSelected)
       }
       formData.append('_method', 'PUT')
-      formData.append('name', data.name)
+      formData.append('name', data.name || '')
       if (file === null) {
         formData.append('delete_avt', true)
       }
-      formData.append('email', data.email)
-      formData.append('address', data.address)
+      formData.append('email', data.email || '')
+      formData.append('address', data.address || '')
       formData.append('details', data.details || '')
-      formData.append('phone_number', data.phone_number)
-      formData.append('gender', data.gender)
+      formData.append('phone_number', data.phone_number || '')
+      formData.append('gender', data.gender || '')
       if (data?.password) {
-        formData.append('password', data.password)
-        formData.append('password_confirmation', data.password_confirmation)
+        formData.append('password', data.password || '')
+        formData.append(
+          'password_confirmation',
+          data.password_confirmation || '',
+        )
       }
-      formData.append('dob', data.dob)
+      let formattedDOB = undefined
+      if (data.dob) formattedDOB = data.dob.format('YYYY-MM-DD')
+      formData.append('dob', formattedDOB || '')
       const res = await updateProfile(formData)
       localStorage.setItem('user_info', JSON.stringify(res.data.data))
       notification['success']({
         message: 'Update successful',
-        description: res.data.message,
+        description: 'Update profile successfully! ',
       })
       navigate('/profile')
     } catch (err: any) {
@@ -92,7 +100,7 @@ const UpdateProfilePage = () => {
         notification['error']({
           key,
           duration: 5,
-          message: 'Update role failed',
+          message: 'Update profile failed',
           description: (
             <div
               dangerouslySetInnerHTML={{ __html: errorMessages }}
@@ -103,7 +111,7 @@ const UpdateProfilePage = () => {
       } else {
         notification['error']({
           duration: 5,
-          message: 'Update role failed',
+          message: 'Update profile failed',
           description: err.response.data.message,
         })
       }
@@ -131,13 +139,13 @@ const UpdateProfilePage = () => {
       <h1 className="text-blue-500 flex justify-center">
         Personal profile setting
       </h1>
-      {isLoading ? (
+      {!res ? (
         <Spin className="flex justify-center" />
       ) : (
         <Form name="update-profile" layout="vertical" form={antForm}>
-          <div className="flex justify-center ml-10 mb-4">
+          <div className="flex justify-center mb-4">
             <Avatar
-              src={file}
+              src={file ? file : './uet.png'}
               alt="avatar"
               className="w-[150px] h-[150px] flex justify-center"
               onClick={() => {
@@ -167,6 +175,7 @@ const UpdateProfilePage = () => {
                 label="Full name"
                 initialValue={res?.name}
                 rules={[editProfileRules as any]}
+                required
               >
                 <Input />
               </Form.Item>
@@ -178,6 +187,7 @@ const UpdateProfilePage = () => {
                 label="Email"
                 initialValue={res?.email}
                 rules={[editProfileRules as any]}
+                required
               >
                 <Input />
               </Form.Item>
@@ -190,6 +200,7 @@ const UpdateProfilePage = () => {
                 name="gender"
                 label="Gender"
                 initialValue={res?.gender}
+                required
               >
                 <Select options={LIST_GENDER} />
               </Form.Item>
@@ -199,10 +210,17 @@ const UpdateProfilePage = () => {
                 className="ml-10 mr-10"
                 name="dob"
                 label="Date of birth"
-                initialValue={res?.dob}
+                // initialValue={res?.dob}
+                initialValue={res?.dob ? dayjs(res?.dob) : null}
                 rules={[editProfileRules as any]}
               >
-                <Input type="date" value={`${res?.dob}`} />
+                {/* <Input type="date" value={`${res?.dob}`} /> */}
+                <DatePicker
+                  className="w-full"
+                  placeholder="Date of birth"
+                  format="YYYY-MM-DD"
+                  picker="date"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -259,22 +277,17 @@ const UpdateProfilePage = () => {
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item className="flex justify-center">
-            <Button
-              danger
-              type="primary"
-              className="w-[100px] m-5  rounded-full"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
+          <Form.Item className="flex justify-end">
             <Button
               type="primary"
-              className="w-[100px] text-white m-5 rounded-full"
+              className="mr-5"
               htmlType="submit"
               onClick={handleSubmit}
             >
               Update
+            </Button>
+            <Button danger type="primary" className="" onClick={handleCancel}>
+              Cancel
             </Button>
           </Form.Item>
         </Form>

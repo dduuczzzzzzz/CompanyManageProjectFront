@@ -1,6 +1,6 @@
 import { Select } from 'antd'
 import { useEffect, useState } from 'react'
-import { getRole } from '../../services/request/user'
+import { getAllRole, getRole } from '../../services/request/user'
 
 const { Option } = Select
 
@@ -24,7 +24,7 @@ export const RoleSelect = ({
   }, [])
 
   const getRoles = async () => {
-    const response = await getRole()
+    const response = await getAllRole()
     setRoles(response)
   }
   return (

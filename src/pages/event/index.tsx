@@ -17,7 +17,11 @@ import { deleteEvent, event, getTypeEvent } from '../../services/event'
 import { TypeEvent, TypeParamsEvent } from '../../types/event'
 import { getPermissions, getUser } from '../../libs/helpers/getLocalStorage'
 import { Link, useNavigate } from 'react-router-dom'
-import { EVENT_DELETE, EVENT_UPDATE } from '../../libs/constants/Permissions'
+import {
+  EVENT_ADD,
+  EVENT_DELETE,
+  EVENT_UPDATE,
+} from '../../libs/constants/Permissions'
 const { Search } = Input
 
 const EventPage = () => {
@@ -131,7 +135,7 @@ const EventPage = () => {
       setParams((params) => ({ limit: params.limit, page: 1 }))
       return
     }
-    setParams((params) => ({ ...params, type: parseInt(type), page: 1 }))
+    setParams((params) => ({ ...params, type_id: parseInt(type), page: 1 }))
   }
   const handleChangDate = (event: any) => {
     if (!event) {
@@ -149,7 +153,7 @@ const EventPage = () => {
       notification['success']({
         duration: 5,
         message: 'Delele successful',
-        description: response.data.message,
+        description: 'Delete event successfully',
       })
 
       handleGetEvent()
@@ -183,15 +187,20 @@ const EventPage = () => {
   const permissionsInfo = getPermissions()
   return (
     <MainLayout>
-      <Button
-        type="primary"
-        className="mb-8 bg-green-500 float-right"
-        onClick={() => {
-          navigate('/event/add')
-        }}
-      >
-        Create New Event
-      </Button>
+      {permissionsInfo &&
+        EVENT_ADD.every((element: string) =>
+          permissionsInfo.includes(element),
+        ) && (
+          <Button
+            type="primary"
+            className="mb-8 bg-green-500 float-right"
+            onClick={() => {
+              navigate('/event/add')
+            }}
+          >
+            Create New Event
+          </Button>
+        )}
       <div className="flex mt-8">
         <Search
           placeholder="Search event name"
@@ -227,7 +236,7 @@ const EventPage = () => {
         </div>
       </div>
       {isLoading ? (
-        <Spin className="flex justify-center" />
+        <Spin className="mt-4 flex justify-center" />
       ) : (
         <div>
           <List
@@ -316,9 +325,9 @@ const EventPage = () => {
                     </div>
                     <div className="w-[100%] h-[90%] ">
                       <p>{item?.description}</p>
-                      <p>Location: {item?.location}</p>
+                      {item?.location && <p>Location: {item?.location}</p>}
                       <p>
-                        Tine: {item?.start_time} - {item?.end_time}
+                        Time: {item?.start_time} - {item?.end_time}
                       </p>
                       {item?.link && <a href={item?.link}>link chi tiết</a>}
                       <br />

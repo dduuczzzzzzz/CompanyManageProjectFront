@@ -135,12 +135,8 @@ const Sidebar = () => {
         label: 'Session',
         children: [
           {
-            label: 'Check In',
+            label: 'Check In/Out',
             key: '/session/check-in',
-          },
-          {
-            label: 'Check Out',
-            key: '/session/check-out',
           },
           checkChildrenSidebar(SESSION_LIST, {
             label: 'Session list',

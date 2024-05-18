@@ -202,7 +202,7 @@ const TeamPage = () => {
         <ModalCreateTeam
           openModal={setOpenModalUpdateTeam}
           onCreate={onUpdate}
-          blog={'UPDATE'}
+          blog={'Update'}
           team={teamCheck}
           checkListMain={true}
         />

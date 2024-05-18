@@ -11,13 +11,13 @@ const UsersEdit = () => {
   const currentUrl = window.location.href
   let id: string = currentUrl.split('/')[5]
   useEffect(() => {
-    userApiGetUser({ setUserData, setStartDate, setIsLoading }, id)   
+    userApiGetUser({ setUserData, setStartDate, setIsLoading }, id)
   }, [])
 
   return (
     <MainLayout>
       <div className="mb-12">
-        <h2>Update a new user</h2>
+        <h1 className="text-sky-500 flex justify-center">Update User</h1>
       </div>
 
       <div className={'w-full grid place-items-center'}>
@@ -30,7 +30,6 @@ const UsersEdit = () => {
           setIsLoading={setIsLoading}
         />
       </div>
-      {isLoading ? <Spinner /> : ''}
     </MainLayout>
   )
 }

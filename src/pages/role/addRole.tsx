@@ -15,6 +15,7 @@ const AddRolePage = () => {
         message: 'Add role successful',
         description: res.data.message,
       })
+      navigate('/role/')
     } catch (err: any) {
       if (err.response.data.errors) {
         const errorMessages = Object.values(err.response.data.errors)
@@ -40,7 +41,6 @@ const AddRolePage = () => {
         })
       }
     }
-    navigate('/role/')
   }
   const handleCancel = () => {
     navigate('/role/')
@@ -60,6 +60,13 @@ const AddRolePage = () => {
             className="ml-10 mr-10"
             name="role_name"
             label="Role name:"
+            rules={[
+              {
+                required: true,
+                message: 'Role name is required!',
+                whitespace: true,
+              },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -68,22 +75,28 @@ const AddRolePage = () => {
             name="description"
             className="ml-10 mr-10 "
             label="Description:"
+            rules={[
+              {
+                required: true,
+                message: 'Role description is required!',
+                whitespace: true,
+              },
+            ]}
           >
             <Input.TextArea rows={3} />
           </Form.Item>
-          <Form.Item className="flex justify-center">
+          <Form.Item className="flex justify-end">
             <Button
               type="primary"
-              className="w-[110px] m-5 items-center rounded-full"
+              className="mr-3"
               htmlType="submit"
               onClick={handleSubmit}
             >
-              Add role
+              Save
             </Button>
             <Button
-              danger
               type="primary"
-              className="w-[110px] m-5 items-center rounded-full"
+              className="bg-gray-500"
               onClick={handleCancel}
             >
               Cancel

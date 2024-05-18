@@ -57,8 +57,8 @@ const Filter = ({
             className={'w-32'}
             allowClear
             options={[
-              { value: '1', label: 'Actice' },
-              { value: '0', label: 'Block' },
+              { value: '0', label: 'Actice' },
+              { value: '1', label: 'Inactive' },
             ]}
           />
         </div>

@@ -1,17 +1,18 @@
 import * as tf from '@tensorflow/tfjs'
-import { notification } from 'antd'
+import { Button, notification } from 'antd'
 import { error } from 'console'
 import { useEffect, useState } from 'react'
 import Spinner from '../../../components/user/spin'
 import { getUser } from '../../../libs/helpers/getLocalStorage'
+import { upsertSessionAPI } from '../../../services/request/session'
+import {
+  getUserFaceRegisterStatusAPI,
+  registerUserFaceAPI,
+} from '../../../services/request/user'
 
 const CheckInWebCam = () => {
   // get element
-  const STATUS = document.getElementById('status')
   const VIDEO = document.getElementById('webcam') as any
-  const ENABLE_CAM_BUTTON = document.getElementById('enableCam')
-  const RESET_BUTTON = document.getElementById('reset')
-  const TRAIN_BUTTON = document.getElementById('train')
   const MOBILE_NET_INPUT_WIDTH = 224
   const MOBILE_NET_INPUT_HEIGHT = 224
   const STOP_DATA_GATHER = -1
@@ -24,7 +25,9 @@ const CheckInWebCam = () => {
   const [savedModel, setSavedModel] = useState<any>()
   const [model, setModel] = useState<any>()
   const [loading, setLoading] = useState<boolean>(true)
+  const [faceRegist, setFaceRegist] = useState<boolean>(false)
   const user = getUser()
+
   // let mobilenet: any = undefined
   let gatherDataState: any = STOP_DATA_GATHER
   let videoPlaying = false
@@ -32,10 +35,8 @@ const CheckInWebCam = () => {
   let trainingDataOutputs: any[] = []
   let examplesCount: any[] = []
   let predict = false
-
-  ENABLE_CAM_BUTTON && ENABLE_CAM_BUTTON.addEventListener('click', enableCam)
-  TRAIN_BUTTON && TRAIN_BUTTON.addEventListener('click', trainAndPredict)
-  RESET_BUTTON && RESET_BUTTON.addEventListener('click', reset)
+  let accuracy: any = 0
+  let predictUserID = -1
 
   console.log(VIDEO)
   if (VIDEO) {
@@ -65,7 +66,6 @@ const CheckInWebCam = () => {
           VIDEO.srcObject = stream
           VIDEO.addEventListener('loadeddata', function () {
             videoPlaying = true
-            // ENABLE_CAM_BUTTON.classList.add('removed')
           })
         }
       })
@@ -75,7 +75,7 @@ const CheckInWebCam = () => {
   }
 
   // train and predict model
-  async function trainAndPredict() {
+  async function trainModel() {
     predict = false
     try {
       tf.util.shuffleCombo(trainingDataInputs, trainingDataOutputs)
@@ -94,8 +94,15 @@ const CheckInWebCam = () => {
       oneHotOutputs.dispose()
       inputsAsTensor.dispose()
       predict = true
-      // predictLoop()
       const saveResult = await model.save('localstorage://my-model-1')
+      // call API to update user register status
+      const result = await registerUserFaceAPI()
+      setFaceRegist(true)
+      notification['success']({
+        key: 'registFaceSucess',
+        duration: 5,
+        message: 'Register face successfully',
+      })
     } catch (err) {
       console.log(err)
     }
@@ -125,10 +132,6 @@ const CheckInWebCam = () => {
         if (savedModel) {
           let prediction: any = savedModel.predict(imageFeatures) as tf.Tensor
           prediction = prediction.squeeze()
-          console.log('Prediction: ', prediction)
-          // let predictedClassIndex = tf.argMax(prediction, -1).dataSync()[0]
-          // let predictedName = CLASS_NAMES[predictedClassIndex] // Assuming classNames is an array of class names
-          // console.log('Predicted Name:', predictedName)
           let highestIndex = prediction.argMax().arraySync()
           console.log('Index: ', highestIndex)
           let predictionArray = prediction.arraySync()
@@ -137,14 +140,12 @@ const CheckInWebCam = () => {
             Math.floor(predictionArray[highestIndex] * 100),
           )
           console.log('Predict user id: ', CLASS_NAMES[highestIndex])
+          predictUserID = highestIndex
+          accuracy = Math.floor(predictionArray[highestIndex] * 100)
           return
         }
         let prediction: any = model.predict(imageFeatures) as tf.Tensor
         prediction = prediction.squeeze()
-        console.log('Prediction: ', prediction)
-        // let predictedClassIndex = tf.argMax(prediction, -1).dataSync()[0]
-        // let predictedName = CLASS_NAMES[predictedClassIndex] // Assuming classNames is an array of class names
-        // console.log('Predicted Name:', predictedName)
         let highestIndex = prediction.argMax().arraySync()
         console.log('Index: ', highestIndex)
         let predictionArray = prediction.arraySync()
@@ -153,10 +154,104 @@ const CheckInWebCam = () => {
           Math.floor(predictionArray[highestIndex] * 100),
         )
         console.log('Predict user id: ', CLASS_NAMES[highestIndex])
+        predictUserID = highestIndex
+        accuracy = Math.floor(predictionArray[highestIndex] * 100)
       }
     })
+  }
 
-    // window.requestAnimationFrame(predictLoop)
+  async function handleCheckIn() {
+    try {
+      const currentDate = new Date().toISOString().split('T')[0]
+      const formData = new FormData()
+      formData.append('date', currentDate)
+      formData.append('get_check_in', '1')
+      const res = await upsertSessionAPI(formData)
+      notification['success']({
+        key: 'upsertSessionSuccess',
+        duration: 5,
+        message: 'Check in successfully',
+      })
+      // setSession(res.data.data.records)
+      // setIsLoading(false)
+    } catch (err: any) {
+      console.log(err.response)
+      const errorMessages = Object.values(err.response.data.message)
+        .map((message) => `- ${message}<br>`)
+        .join('')
+      const key = 'upsertSessionFail'
+      notification['error']({
+        key,
+        duration: 5,
+        message: 'Error!',
+        description: (
+          <div
+            dangerouslySetInnerHTML={{ __html: err.response.data.message }}
+            className="text-red-500"
+          />
+        ),
+      })
+    }
+  }
+
+  function checkIn() {
+    predictLoop()
+    if (Number(predictUserID) === Number(user.id) && accuracy >= 80) {
+      handleCheckIn()
+    } else {
+      notification['error']({
+        key: 'recognozrFail',
+        duration: 5,
+        message: 'Fail to recognize user! Try again',
+      })
+    }
+  }
+
+  async function handleCheckOut() {
+    try {
+      const currentDate = new Date().toISOString().split('T')[0]
+      const formData = new FormData()
+      formData.append('date', currentDate)
+      formData.append('get_check_out', '1')
+      const res = await upsertSessionAPI(formData)
+      notification['success']({
+        key: 'upsertSessionSuccess',
+        duration: 5,
+        message: 'Check out successfully',
+      })
+      // setSession(res.data.data.records)
+      // setIsLoading(false)
+    } catch (err: any) {
+      console.log(err.response)
+      const errorMessages = Object.values(err.response.data.message)
+        .map((message) => `- ${message}<br>`)
+        .join('')
+      const key = 'upsertSessionFail'
+      notification['error']({
+        key,
+        duration: 5,
+        message: 'Error!',
+        description: (
+          <div
+            dangerouslySetInnerHTML={{ __html: err.response.data.message }}
+            className="text-red-500"
+          />
+        ),
+      })
+    }
+  }
+
+  function checkOut() {
+    predictLoop()
+    if (Number(predictUserID) === Number(user.id) && accuracy >= 80) {
+      handleCheckOut()
+    } else {
+      notification['error']({
+        key: 'recognozrFail',
+        duration: 5,
+        message: 'Fail to recognize user! Try again',
+      })
+    }
   }
 
   /**
@@ -177,21 +272,12 @@ const CheckInWebCam = () => {
     console.log('Tensors in memory: ' + tf.memory().numTensors)
   }
 
-  let dataCollectorButtons = document.querySelectorAll('button.dataCollector')
-  for (let i = 0; i < dataCollectorButtons.length; i++) {
-    dataCollectorButtons[i].addEventListener('mousedown', gatherDataForClass)
-    dataCollectorButtons[i].addEventListener('mouseup', gatherDataForClass)
-    // Populate the human readable names for classes.
-    // CLASS_NAMES.push(dataCollectorButtons[i].getAttribute('data-name'))
-  }
-
   function gatherDataForClass() {
-    // let classNumber = parseInt(this.getAttribute('data-1hot'))
     gatherDataState =
       gatherDataState === STOP_DATA_GATHER ? user.id : STOP_DATA_GATHER
     notification['info']({
       key: 'gatherData',
-      duration: 5,
+      duration: 2,
       message: 'Gathering data ...',
     })
     dataGatherLoop()
@@ -223,11 +309,6 @@ const CheckInWebCam = () => {
         gatherDataState = STOP_DATA_GATHER
         return
       }
-      // STATUS.innerText = ''
-      // for (let n = 0; n < CLASS_NAMES.length; n++) {
-      //   STATUS.innerText +=
-      //     CLASS_NAMES[n] + ' data count: ' + examplesCount[n] + '. '
-      // }
       window.requestAnimationFrame(dataGatherLoop)
     }
   }
@@ -257,17 +338,14 @@ const CheckInWebCam = () => {
     console.log('Mobile Net load')
     setMobileNet(mobilenetModel)
     setLoading(false)
-    // STATUS.innerText = 'MobileNet v3 loaded successfully!'
-
-    // tf.tidy(function () {
-    //   let answer = mobilenet.predict(
-    //     tf.zeros([1, MOBILE_NET_INPUT_HEIGHT, MOBILE_NET_INPUT_WIDTH, 3]),
-    //   )
-    //   console.log(answer.shape)
-    // })
   }
 
   useEffect(() => {
+    const fetcher = async () => {
+      const result = await getUserFaceRegisterStatusAPI()
+      setFaceRegist(result.data.data)
+    }
+    fetcher()
     loadMobileNetFeatureModel()
     // setLoading(true)
   }, [])
@@ -334,22 +412,32 @@ const CheckInWebCam = () => {
       </div>
 
       <div>
-        {/* <button id="enableCam" onClick={enableCam}>
-          Enable Webcam
-        </button> */}
-        <button className="dataCollector" data-1hot="0" data-name="Class 1">
-          Gather Data
-        </button>
-        <button id="train">Train &amp; Predict!</button>
-        <button id="predict" onClick={predictLoop}>
-          Predict!
-        </button>
-        <button id="reset" onClick={reset}>
-          Reset
-        </button>
-        <button id="save-file" onClick={saveModelToFile}>
+        {/* <button id="save-file" onClick={saveModelToFile}>
           Save Model to FILE
-        </button>
+        </button> */}
+        {faceRegist ? (
+          <div className="flex justify-center">
+            <Button id="predict" className="mr-3" onClick={checkIn}>
+              Check In
+            </Button>
+            <Button id="predict" onClick={checkOut}>
+              Check Out
+            </Button>
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <Button
+              className="dataCollector mr-3"
+              onMouseDown={gatherDataForClass}
+              onMouseUp={gatherDataForClass}
+            >
+              Gather Data
+            </Button>
+            <Button id="train" onClick={trainModel}>
+              Register your face
+            </Button>
+          </div>
+        )}
       </div>
       {loading && <Spinner />}
     </>

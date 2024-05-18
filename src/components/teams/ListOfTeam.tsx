@@ -6,6 +6,7 @@ import type { ColumnsType } from 'antd/es/table'
 import { useNavigate } from 'react-router-dom'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { TEAM_ADD } from '../../libs/constants/Permissions'
 
 interface Props {
   listTeam: Team[]
@@ -230,16 +231,21 @@ const ListOfTeam: React.FC<Props> = ({
   return (
     <>
       <div className="mb-8">
-        <Button
-          type="primary"
-          onClick={() => {
-            navigate('/teams/create', { state: { teamId } })
-          }}
-          style={{ marginBottom: 10 }}
-          className="mb-8 bg-green-500 float-right focus:bg-green-400"
-        >
-          Create New Team
-        </Button>
+        {permissionsInfo &&
+          TEAM_ADD.every((element: string) =>
+            permissionsInfo.includes(element),
+          ) && (
+            <Button
+              type="primary"
+              onClick={() => {
+                navigate('/teams/create', { state: { teamId } })
+              }}
+              style={{ marginBottom: 10 }}
+              className="mb-8 bg-green-500 float-right focus:bg-green-400"
+            >
+              Create New Team
+            </Button>
+          )}
       </div>
 
       <Filter

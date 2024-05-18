@@ -12,11 +12,14 @@ import MainLayout from '../../components/layouts/main'
 import Filter from '../../components/user/filter'
 import { User } from '../../types/user'
 import { FilterType } from '../../types/user'
-import { userApi, userApiDelete } from '../../services/request/user'
+import { getAllRole, userApi, userApiDelete } from '../../services/request/user'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
-import { USER_DELETE, USER_UPDATE } from '../../libs/constants/Permissions'
+import {
+  USER_ADD,
+  USER_DELETE,
+  USER_UPDATE,
+} from '../../libs/constants/Permissions'
 import Spinner from '../../components/user/spin'
-import { getRole } from '../../services/request/user'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 const ListUsers = () => {
@@ -61,7 +64,7 @@ const ListUsers = () => {
   }, [filter, idUser])
 
   const getRoles = async () => {
-    const response = await getRole()
+    const response = await getAllRole()
     setRoles(response)
   }
   const columns: ColumnsType<User> = [
@@ -146,9 +149,9 @@ const ListUsers = () => {
       width: '5%',
       render: (status) => {
         if (status == 1) {
-          return <p>Active</p>
+          return <p>Inactive</p>
         } else {
-          return <p>Block</p>
+          return <p>Active</p>
         }
       },
     },
@@ -196,15 +199,20 @@ const ListUsers = () => {
     <MainLayout>
       <>
         <div className="mb-8">
-          <Button
-            type="primary"
-            className="mb-8 bg-green-500 float-right focus:bg-green-400"
-            onClick={() => {
-              navigate('/users/add')
-            }}
-          >
-            Create New User
-          </Button>
+          {permissionsInfo &&
+            USER_ADD.every((element: string) =>
+              permissionsInfo.includes(element),
+            ) && (
+              <Button
+                type="primary"
+                className="mb-8 bg-green-500 float-right focus:bg-green-400"
+                onClick={() => {
+                  navigate('/users/add')
+                }}
+              >
+                Create New User
+              </Button>
+            )}
         </div>
         <Filter setFilter={setFilter} filterValue={filter} />
         {isLoading ? (

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import DatePicker from 'react-datepicker'
 import { useNavigate } from 'react-router-dom'
-import { Button, Form, Input, Select, Spin } from 'antd'
+import { Button, Form, Input, Select, Spin, DatePicker } from 'antd'
 import { UploadPicture } from './upload'
 import 'react-datepicker/dist/react-datepicker.css'
-import { userApiCreate, userApiUpdate } from '../../services/request/user'
+import {
+  getAllRole,
+  userApiCreate,
+  userApiUpdate,
+} from '../../services/request/user'
 import '../../styles/user/user.css'
 import dayjs from 'dayjs'
 import Spinner from './spin'
@@ -33,7 +36,7 @@ const FormPost = (props: any) => {
   useEffect(() => {}, [error])
 
   const getAllRoles = async () => {
-    const response = await getRole()
+    const response = await getAllRole()
     setRole(response)
   }
   const [roles, setRole] = useState([])
@@ -98,7 +101,6 @@ const FormPost = (props: any) => {
         id,
       )
 
-      console.log(resultUpdate)
       if (resultUpdate !== undefined) {
         navigate('/users/')
       } else {
@@ -164,7 +166,7 @@ const FormPost = (props: any) => {
           rules={[
             {
               required: true,
-              message: 'Please input your E-mail!',
+              message: 'Name field is required!',
               whitespace: true,
             },
           ]}
@@ -183,7 +185,7 @@ const FormPost = (props: any) => {
             },
             {
               required: true,
-              message: 'Please input your E-mail!',
+              message: 'Email field is required!',
             },
           ]}
         >
@@ -199,7 +201,7 @@ const FormPost = (props: any) => {
               : [
                   {
                     required: true,
-                    message: 'Please input your password!',
+                    message: 'User password is required!',
                   },
                   {
                     min: 6,
@@ -224,7 +226,7 @@ const FormPost = (props: any) => {
               : [
                   {
                     required: true,
-                    message: 'Please confirm your password!',
+                    message: 'Please confirm user password!',
                   },
                 ]
           }
@@ -233,7 +235,7 @@ const FormPost = (props: any) => {
         </Form.Item>
 
         <Form.Item name="gender" label="Gender">
-          <Select placeholder="select your gender">
+          <Select placeholder="Select user gender">
             <Option value="1">Male</Option>
             <Option value="2">Female</Option>
             <Option value="3">Other</Option>
@@ -241,18 +243,18 @@ const FormPost = (props: any) => {
         </Form.Item>
 
         <Form.Item name="status" label="Status">
-          <Select placeholder="select your status">
-            <Option value="1">Active</Option>
-            <Option value="0">Block</Option>
+          <Select placeholder="Select user status">
+            <Option value="0">Active</Option>
+            <Option value="1">Inactive</Option>
           </Select>
         </Form.Item>
 
         <Form.Item
           name="role_id"
           label="Role"
-          rules={[{ required: true, message: 'Please select gender!' }]}
+          rules={[{ required: true, message: 'User role is required!' }]}
         >
-          <Select placeholder="select your role">
+          <Select placeholder="Select user role">
             {roles.map((role: any) => {
               return (
                 <Option key={role.id} value={`${role.id}`}>
@@ -279,24 +281,6 @@ const FormPost = (props: any) => {
         >
           <Input />
         </Form.Item>
-
-        <Form.Item
-          name="birth"
-          label="Date of Birth"
-          validateStatus={error?.dob ? 'error' : ''}
-          help={error?.dob ? 'The day field must be a date before today' : ''}
-        >
-          <DatePicker
-            onChange={(date: any) => {
-              handleDatePickerChange(date)
-            }}
-            wrapperClassName="datePicker"
-            dateFormat={'dd-MM-yyyy'}
-            selected={startDate}
-            isClearable
-            placeholderText="Input your birth!"
-          />
-        </Form.Item>
         <Form.Item name="details" label="Details">
           <Input.TextArea showCount maxLength={100} />
         </Form.Item>
@@ -317,7 +301,6 @@ const FormPost = (props: any) => {
           </Button>
         </div>
       </Form>
-      {isLoading ? <Spinner /> : ''}
     </>
   )
 }
