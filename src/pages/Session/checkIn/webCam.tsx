@@ -275,12 +275,21 @@ const CheckInWebCam = () => {
   function gatherDataForClass() {
     gatherDataState =
       gatherDataState === STOP_DATA_GATHER ? user.id : STOP_DATA_GATHER
+    dataGatherLoop()
+    predictLoop()
+    if (Number(predictUserID) !== Number(user.id) && accuracy >= 80) {
+      notification['error']({
+        key: 'gatherDataError',
+        duration: 2,
+        message: 'Your face has been registered! Try again!',
+      })
+      return
+    }
     notification['info']({
       key: 'gatherData',
       duration: 2,
       message: 'Gathering data ...',
     })
-    dataGatherLoop()
   }
 
   function dataGatherLoop() {
@@ -405,11 +414,19 @@ const CheckInWebCam = () => {
 
   // Call the function immediately to start loading.
 
+  async function saveModel() {
+    const saveResult = await model.save(
+      process.env.REACT_APP_API_URL + '/model/upsert',
+    )
+    return
+  }
+
   return (
     <>
       <div className="flex justify-center items-center w-full mt-2 mb-4">
         <video id="webcam" autoPlay muted></video>
       </div>
+      <Button onClick={saveModel}>Save Model</Button>
 
       <div>
         {/* <button id="save-file" onClick={saveModelToFile}>

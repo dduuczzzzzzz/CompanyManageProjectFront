@@ -125,7 +125,12 @@ const ModalCreateTeam: React.FC<Props> = ({
           >
             {blog}
           </Button>,
-          <Button key="back" onClick={() => toggleModalCreate()}>
+          <Button
+            key="back"
+            onClick={() => toggleModalCreate()}
+            className="bg-gray-500"
+            type="primary"
+          >
             Cancel
           </Button>,
         ]}

@@ -90,6 +90,7 @@ const TeamPage = () => {
         }, 50)
       }
     } catch (error) {
+      setOpenModalDelete(false)
       setTimeout(() => {
         notification['error']({
           duration: 5,

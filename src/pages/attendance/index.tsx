@@ -208,8 +208,8 @@ const AtendanceListPage = () => {
               <Select
                 placeholder="Select attendance type"
                 onChange={statusHandler}
+                allowClear
               >
-                <Select.Option value="">Select attendance type</Select.Option>
                 <Select.Option value={ATTENDANCE_STATUS.NOT_REVIEWED}>
                   Not reviewed
                 </Select.Option>
