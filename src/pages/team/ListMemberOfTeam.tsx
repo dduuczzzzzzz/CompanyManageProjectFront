@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { ColumnsType } from 'antd/es/table'
-import { Space, Button, Modal, Table, message, Spin } from 'antd'
+import { Space, Button, Modal, Table, message, Spin, notification } from 'antd'
 import ModalRemove from './ModalRemove'
 import axiosInstance from '../../services/request/base'
 import SelectOption from '../../components/teams/SelectOption'
@@ -9,7 +9,12 @@ import { User } from '../../components/teams/interface'
 import { useNavigate, useParams } from 'react-router-dom'
 import MainLayout from '../../components/layouts/main'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
-import { TEAM_DELETE_MEMBER } from '../../libs/constants/Permissions'
+import {
+  TEAM_ADD_MEMBER,
+  TEAM_DELETE_MEMBER,
+} from '../../libs/constants/Permissions'
+import { DeleteOutlined } from '@ant-design/icons'
+
 const permissionsInfo = getPermissions()
 
 const ListMemberOfTeam = () => {
@@ -75,11 +80,26 @@ const ListMemberOfTeam = () => {
       setShowModalDeleteMem(false)
       await getListMember()
       setTimeout(() => {
-        message.success('Delete Successful')
+        notification['success']({
+          key: 'delete member',
+          duration: 5,
+          message: 'Delete member successfully',
+        })
       }, 250)
     } else {
       setTimeout(() => {
-        message.error('Delete Fail')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: 'Delete fail!',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 250)
     }
   }
@@ -134,8 +154,13 @@ const ListMemberOfTeam = () => {
             TEAM_DELETE_MEMBER.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Button danger type="primary" onClick={() => deleteUser(data.id)}>
-                Delete
+              <Button
+                danger
+                type="primary"
+                onClick={() => deleteUser(data.id)}
+                className="rounded-full"
+              >
+                <DeleteOutlined />
               </Button>
             )}
         </Space>
@@ -164,12 +189,27 @@ const ListMemberOfTeam = () => {
         setShowModalAddMem(false)
         await getListMember()
         setTimeout(() => {
-          message.success('Add member successful')
+          notification['success']({
+            key: 'add member',
+            duration: 5,
+            message: 'Add member successfully',
+          })
         }, 50)
       }
     } catch (error) {
       setTimeout(() => {
-        message.error('The user is already in the team')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: 'The user is already in the team',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 50)
     }
   }
@@ -182,7 +222,7 @@ const ListMemberOfTeam = () => {
     <MainLayout>
       <div>
         <div className="... flex items-center justify-center">
-          <h1>{title}</h1>
+          <h1 className="text-sky-500 flex justify-center">{title}</h1>
         </div>
         <Button
           onClick={() => {
@@ -191,15 +231,20 @@ const ListMemberOfTeam = () => {
         >
           Back
         </Button>
-        <Button
-          type="primary"
-          className="bg-orange-500 float-right"
-          onClick={() => {
-            setShowModalAddMem(true)
-          }}
-        >
-          Add member
-        </Button>
+        {permissionsInfo &&
+          TEAM_ADD_MEMBER.every((element: string) =>
+            permissionsInfo.includes(element),
+          ) && (
+            <Button
+              type="primary"
+              className="bg-blue-500 float-right"
+              onClick={() => {
+                setShowModalAddMem(true)
+              }}
+            >
+              Add member
+            </Button>
+          )}
 
         {isLoading ? (
           <Spin className="flex justify-center" />
@@ -214,12 +259,9 @@ const ListMemberOfTeam = () => {
           onCancel={() => {
             setShowModalAddMem(false)
           }}
-          title={'ADD USERS'}
+          title={'Add users'}
           footer={[
-            <Button
-              style={{ backgroundColor: 'green' }}
-              onClick={() => AddUser()}
-            >
+            <Button type="primary" onClick={() => AddUser()}>
               Add
             </Button>,
             <Button

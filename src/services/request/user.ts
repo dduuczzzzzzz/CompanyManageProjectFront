@@ -1,8 +1,13 @@
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import axiosInstance from './base'
 import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
+import { div } from '@tensorflow/tfjs'
 // import { ErrorMessage } from '../../types/user'
+
+export const getAllUserAPI = () => {
+  return axiosInstance.get(`/user/get-all`)
+}
 
 export const userApi = async (
   // method:string,
@@ -38,11 +43,21 @@ export const userApiDelete = async (
         setIsLoading(false)
         setTimeout(() => {
           setIdUser(id)
-          message.success('Delete successfully')
+          notification['success']({
+            key: 'delete',
+            duration: 5,
+            message: 'Delete user successfully!',
+          })
         }, 0)
         return true
       })
-  } catch (errors: any) {}
+  } catch (err: any) {
+    notification['error']({
+      duration: 5,
+      message: 'Delete user failed',
+      description: err.response.data.message,
+    })
+  }
 }
 
 export const userApiGetUser = async (
@@ -78,7 +93,11 @@ export const userApiCreate = async (
       .post(`/user/store`, createValue)
       .then((response) => {
         setTimeout(() => {
-          message.success('Create successfully a new user')
+          notification['success']({
+            key: 'add user',
+            duration: 5,
+            message: 'Add user successfully',
+          })
         }, 0)
         return response
       })
@@ -102,7 +121,11 @@ export const userApiUpdate = async (
       .post(`/user/update/${id}`, createValue)
       .then((response) => {
         setTimeout(() => {
-          message.success('Update successfully a user')
+          notification['success']({
+            key: 'update user',
+            duration: 5,
+            message: 'Update user successfully',
+          })
         }, 0)
         return response
       })
@@ -120,6 +143,20 @@ export const getRole = async () => {
     const roleData = await axiosInstance.get(`/role`).then((response) => {
       if (response.data) {
         const dataset = response.data.data.records
+        return dataset
+      }
+    })
+    return roleData
+  } catch (errors: any) {
+    const errorApi = errors.response.data.errors
+  }
+}
+
+export const getAllRole = async () => {
+  try {
+    const roleData = await axiosInstance.get(`/role/list`).then((response) => {
+      if (response.data) {
+        const dataset = response.data.data
         return dataset
       }
     })
@@ -187,4 +224,38 @@ export const ImportInfor = async (
     setLoopTime(false)
     setLoadings(false)
   }
+}
+export const exportUserAPI = (searchParams: URLSearchParams) => {
+  return axiosInstance
+    .get(`/user/exportUser`, {
+      params: searchParams,
+      responseType: 'blob',
+    })
+    .then((value: any) => {
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(value.data)
+
+      // Create an <a> element to trigger the download
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'users.xlsx'
+
+      // Trigger a click event to download the file
+      a.click()
+
+      // Cleanup
+      window.URL.revokeObjectURL(url)
+    })
+}
+
+export const getUserFaceRegisterStatusAPI = () => {
+  return axiosInstance.get(`user/regist-face-status`)
+}
+
+export const registerUserFaceAPI = () => {
+  return axiosInstance.post(`user/regist-face`, null, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 }

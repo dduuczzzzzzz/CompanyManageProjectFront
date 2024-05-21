@@ -4,18 +4,29 @@ import {
   Route,
   Link,
   redirect,
+  useNavigate,
 } from 'react-router-dom'
-import { Table, Space, Modal, Button } from 'antd'
+import { Table, Space, Modal, Button, Spin, Pagination } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import MainLayout from '../../components/layouts/main'
 import Filter from '../../components/user/filter'
 import { User } from '../../types/user'
 import { FilterType } from '../../types/user'
-import { userApi, userApiDelete } from '../../services/request/user'
+import { getAllRole, userApi, userApiDelete } from '../../services/request/user'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
-import { USER_DELETE, USER_UPDATE } from '../../libs/constants/Permissions'
+import {
+  USER_ADD,
+  USER_DELETE,
+  USER_UPDATE,
+} from '../../libs/constants/Permissions'
 import Spinner from '../../components/user/spin'
-import { getRole } from '../../services/request/user'
+import {
+  EditOutlined,
+  DeleteOutlined,
+  UnorderedListOutlined,
+  AppstoreOutlined,
+} from '@ant-design/icons'
+import UserGridCardView from '../../components/user/UserGridCardView'
 
 const ListUsers = () => {
   const permissionsInfo = getPermissions()
@@ -30,22 +41,24 @@ const ListUsers = () => {
     role: '',
   })
   const [isLoading, setIsLoading] = useState<boolean>()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<any>(null)
+  const [gridView, setGridView] = useState<boolean>(false)
+
+  const navigate = useNavigate()
   const handleDelete = async (key: string) => {
     await userApiDelete({ setIdUser, setIsLoading }, key)
+    setIsModalOpen(false)
   }
 
-  const showDeleteConfirm = (record: any) => {
-    Modal.confirm({
-      title: 'Delete Record',
-      content: `Are you sure you want to delete ${record.name}?`,
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk() {
-        handleDelete(record.id)
-      },
-    })
+  const showModal = () => {
+    setIsModalOpen(true)
   }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+
   useEffect(() => {
     setIsLoading(true)
     const url = new URLSearchParams(filter)
@@ -58,7 +71,7 @@ const ListUsers = () => {
   }, [filter, idUser])
 
   const getRoles = async () => {
-    const response = await getRole()
+    const response = await getAllRole()
     setRoles(response)
   }
   const columns: ColumnsType<User> = [
@@ -143,9 +156,9 @@ const ListUsers = () => {
       width: '5%',
       render: (status) => {
         if (status == 1) {
-          return <p>Active</p>
+          return <p>Inactive</p>
         } else {
-          return <p>Block</p>
+          return <p>Active</p>
         }
       },
     },
@@ -162,11 +175,10 @@ const ListUsers = () => {
             USER_UPDATE.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Link
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                to={`/users/edit/${record.id}`}
-              >
-                Update
+              <Link to={`/users/edit/${record.id}`}>
+                <Button type="primary" className="rounded-full">
+                  <EditOutlined />
+                </Button>
               </Link>
             )}
           {permissionsInfo &&
@@ -174,11 +186,15 @@ const ListUsers = () => {
               permissionsInfo.includes(element),
             ) && (
               <Link
-                className='class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"'
                 to=""
-                onClick={() => showDeleteConfirm(record)}
+                onClick={() => {
+                  setCurrentUserId(record.id)
+                  showModal()
+                }}
               >
-                Delete
+                <Button type="primary" danger className="rounded-full">
+                  <DeleteOutlined />
+                </Button>
               </Link>
             )}
         </Space>
@@ -189,25 +205,76 @@ const ListUsers = () => {
   return (
     <MainLayout>
       <>
-        <div className="mb-12">
-          <h2>List of User</h2>
+        <div className="mb-8">
+          {permissionsInfo &&
+            USER_ADD.every((element: string) =>
+              permissionsInfo.includes(element),
+            ) && (
+              <Button
+                type="primary"
+                className="mb-8 bg-green-500 float-right focus:bg-green-400"
+                onClick={() => {
+                  navigate('/users/add')
+                }}
+              >
+                Create New User
+              </Button>
+            )}
+          <Button onClick={() => setGridView(false)} className="mr-2">
+            <UnorderedListOutlined />
+          </Button>
+          <Button onClick={() => setGridView(true)}>
+            <AppstoreOutlined />
+          </Button>
         </div>
         <Filter setFilter={setFilter} filterValue={filter} />
-        <Table
-          columns={columns}
-          dataSource={users}
-          rowKey="id"
-          bordered
-          pagination={{
-            defaultPageSize: 10,
-            total: totalUser,
-            onChange: (page) => {
-              setFilter((filter: any) => ({ ...filter, page: page }))
-            },
+        {isLoading && <Spin className="flex justify-center" />}
+        {!isLoading && gridView && (
+          <UserGridCardView
+            data={users}
+            setCurrentUserId={setCurrentUserId}
+            showModal={showModal}
+          />
+        )}
+        {!isLoading && !gridView && (
+          <>
+            <Table
+              columns={columns}
+              dataSource={users}
+              rowKey="id"
+              pagination={false}
+            />
+          </>
+        )}
+        <Pagination
+          current={filter.page}
+          total={totalUser}
+          showSizeChanger={true}
+          onChange={(page, pageSize) => {
+            setFilter((filter: any) => ({
+              ...filter,
+              page: page,
+              limit: pageSize,
+            }))
           }}
+          className="mt-10 float-right"
+          style={{ marginTop: 10 }}
         />
+        <Modal
+          title="Delete User"
+          open={isModalOpen}
+          onOk={() => handleDelete(currentUserId)}
+          onCancel={handleCancel}
+        >
+          <p>
+            Are you sure you want to delete&nbsp;
+            {currentUserId && users.find((user) => user.id === currentUserId)
+              ? users.find((user) => user.id === currentUserId)?.name
+              : ''}
+            ?
+          </p>
+        </Modal>
       </>
-      {isLoading ? <Spinner /> : ''}
     </MainLayout>
   )
 }

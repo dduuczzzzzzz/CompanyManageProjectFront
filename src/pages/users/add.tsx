@@ -9,7 +9,7 @@ const UsersAdd = () => {
   return (
     <MainLayout>
       <div className="mb-12">
-        <h2>Create a new user</h2>
+        <h1 className="text-sky-500 flex justify-center">Add User </h1>
       </div>
       <div className={'w-full grid place-items-center'}>
         <FormPost

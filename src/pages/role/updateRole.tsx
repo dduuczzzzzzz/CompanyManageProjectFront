@@ -101,9 +101,9 @@ const UpdateRolePage = () => {
     try {
       if (id) {
         const response = await getRole(parseInt(id))
-        if (response.data.data.role_name === ROLES.ADMIN) {
-          navigate('/role/')
-        }
+        // if (response.data.data.role_name === ROLES.ADMIN) {
+        //   navigate('/role/')
+        // }
         setRole(response.data.data)
         setCheckedItems(response.data.data.role_permissions)
       }
@@ -137,7 +137,7 @@ const UpdateRolePage = () => {
   }
   return (
     <MainLayout>
-      <h1 className="text-sky-500 flex justify-center">Sửa role </h1>
+      <h1 className="text-sky-500 flex justify-center">Update role </h1>
       {isloading ? (
         <Spin className="flex justify-center" key="spin" />
       ) : (
@@ -147,8 +147,15 @@ const UpdateRolePage = () => {
               <Form.Item
                 className="ml-10 mr-10"
                 name="role_name"
-                label="Tên role"
+                label="Role name"
                 initialValue={role?.role_name}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Role name is required!',
+                    whitespace: true,
+                  },
+                ]}
               >
                 <Input key="role_name" />
               </Form.Item>
@@ -159,11 +166,19 @@ const UpdateRolePage = () => {
             className="ml-10 mr-10 "
             label="Description"
             initialValue={role?.description}
+            rules={[
+              {
+                required: true,
+                message: 'Role description is required!',
+                whitespace: true,
+              },
+            ]}
           >
             <Input.TextArea rows={3} key="description" />
           </Form.Item>
 
-          <div className="h-[300px] w-[full] ml-[50px] overflow-y-scroll">
+          <div className="h-[300px] w-[full] ml-[40px] overflow-y-scroll">
+            <p>Role Permission</p>
             <table>
               <tbody>
                 {groupName?.map((name: string) => {
@@ -212,23 +227,23 @@ const UpdateRolePage = () => {
             </table>
           </div>
 
-          <Form.Item className="flex justify-center">
+          <Form.Item className="pt-5 flex justify-end">
             <Button
-              type="dashed"
-              className="w-[110px] text-white m-5 bg-green-500 items-center rounded-full"
+              type="primary"
+              className="mr-3"
               htmlType="submit"
               onClick={handleSubmit}
               key="edit_button"
             >
-              Sửa role
+              Save
             </Button>
             <Button
-              type="dashed"
-              className="w-[110px] text-white bg-red-500 m-5 items-center rounded-full"
+              type="primary"
+              className="bg-gray-500"
               onClick={handleCancel}
               key="cancel_button"
             >
-              Hủy
+              Cancel
             </Button>
           </Form.Item>
         </Form>

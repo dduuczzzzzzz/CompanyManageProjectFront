@@ -1,14 +1,14 @@
 export const LIST_GENDER = [
   {
-    label: 'Nam',
+    label: 'Male',
     value: 1,
   },
   {
-    label: 'Nữ',
+    label: 'Female',
     value: 2,
   },
   {
-    label: 'Khác',
+    label: 'Other',
     value: 3,
   },
 ]

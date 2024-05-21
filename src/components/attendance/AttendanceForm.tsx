@@ -11,12 +11,12 @@ import {
   Row,
   Col,
   FormInstance,
-} from 'antd';
-import type { UploadProps } from "antd/es/upload";
-import type { UploadFile } from "antd/es/upload/interface";
-import { User } from "../../types/user";
-import { AttendanceFormData, AttendanceType } from '../../types/attendance';
-import { useEffect, useState } from 'react';
+} from 'antd'
+import type { UploadProps } from 'antd/es/upload'
+import type { UploadFile } from 'antd/es/upload/interface'
+import { User } from '../../types/user'
+import { AttendanceFormData, AttendanceType } from '../../types/attendance'
+import { useEffect, useState } from 'react'
 
 interface Props {
   users?: Array<User>
@@ -26,7 +26,7 @@ interface Props {
   disabled?: boolean
   form?: FormInstance
   onFinishHandler?: any
-  rules?: any,
+  rules?: any
   disableField?: boolean
 }
 
@@ -45,18 +45,20 @@ const AttendanceForm = ({
   form,
   onFinishHandler,
   rules,
-  disableField
+  disableField,
 }: Props) => {
   const startDate = data?.start
   const endDate = data?.end
   // if user has chosen the managers, set the selected manager, else set the default manager to 1 when create attendance
-  const managerSelected = data?.extendedProps?.managers.map((manager: User) => manager.id) ?? [1];
-  const attendanceTypeSelected = data?.extendedProps?.type_id;
-  const startTime = data?.extendedProps?.start_time ?? data?.startTime;
-  const endTime = data?.extendedProps?.end_time ?? data?.endTime;
-  const reason = data?.extendedProps?.reason ?? "";
-  const imgURL = data?.extendedProps?.img ?? null;
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const managerSelected = data?.managers
+    ? data?.managers.map((manager: User) => manager.id)
+    : [1]
+  const attendanceTypeSelected = data?.type_id
+  const startTime = data?.startTime
+  const endTime = data?.endTime
+  const reason = data?.reason ?? ''
+  const imgURL = data?.img ?? null
+  const [fileList, setFileList] = useState<UploadFile[]>([])
 
   useEffect(() => {
     if (imgURL)
@@ -190,7 +192,12 @@ const AttendanceForm = ({
         </Form.Item>
         <Form.Item label="Select your managers">
           <Space className="w-full" direction="vertical">
-            <Form.Item name="ids" initialValue={managerSelected} rules={[rules]} key="managers_select">
+            <Form.Item
+              name="ids"
+              initialValue={managerSelected}
+              rules={[rules]}
+              key="managers_select"
+            >
               <Select
                 mode="multiple"
                 allowClear
@@ -208,8 +215,13 @@ const AttendanceForm = ({
             </Form.Item>
           </Space>
         </Form.Item>
-        <Form.Item label="Reason" name="reason" initialValue={reason} key="reason">
-          <TextArea rows={4} disabled={disableField}/>
+        <Form.Item
+          label="Reason"
+          name="reason"
+          initialValue={reason}
+          key="reason"
+        >
+          <TextArea rows={4} disabled={disableField} />
         </Form.Item>
         <Form.Item label="Image" name="img" rules={[rules]} key="img">
           <Upload

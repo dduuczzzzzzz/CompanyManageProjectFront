@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import DatePicker from 'react-datepicker'
 import { useNavigate } from 'react-router-dom'
-import { Button, Form, Input, Select, Spin } from 'antd'
+import { Button, Form, Input, Select, Spin, DatePicker } from 'antd'
 import { UploadPicture } from './upload'
 import 'react-datepicker/dist/react-datepicker.css'
-import { userApiCreate, userApiUpdate } from '../../services/request/user'
+import {
+  getAllRole,
+  userApiCreate,
+  userApiUpdate,
+} from '../../services/request/user'
 import '../../styles/user/user.css'
 import dayjs from 'dayjs'
 import Spinner from './spin'
@@ -13,24 +16,6 @@ import { getRole } from '../../services/request/user'
 import { react } from '@babel/types'
 
 const { Option } = Select
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-}
-const summitButtonLayout = {
-  wrapperCol: {
-    sm: {
-      offset: 10,
-    },
-  },
-}
 
 const FormPost = (props: any) => {
   const { id } = props
@@ -51,7 +36,7 @@ const FormPost = (props: any) => {
   useEffect(() => {}, [error])
 
   const getAllRoles = async () => {
-    const response = await getRole()
+    const response = await getAllRole()
     setRole(response)
   }
   const [roles, setRole] = useState([])
@@ -94,7 +79,10 @@ const FormPost = (props: any) => {
       'address',
       values.address == null || undefined ? ' ' : values.address,
     )
-    formData.append('phone_number', values.phone_number)
+    formData.append(
+      'phone_number',
+      values.phone_number ? values.phone_number : '',
+    )
 
     if (selectedFile) {
       formData.append('avatar', selectedFile)
@@ -113,7 +101,6 @@ const FormPost = (props: any) => {
         id,
       )
 
-      console.log(resultUpdate)
       if (resultUpdate !== undefined) {
         navigate('/users/')
       } else {
@@ -158,21 +145,20 @@ const FormPost = (props: any) => {
   return (
     <>
       <Form
-        {...formItemLayout}
         form={form}
         name="createForm"
         onFinish={(value) => onFinish(value)}
         className={'w-3/4'}
         scrollToFirstError
       >
-        <Form.Item {...summitButtonLayout}>
+        {/* <Form.Item {...summitButtonLayout}>
           <UploadPicture
             avatar={userData?.avatar}
             selectedFile={selectedFile}
             setSelectedFile={setSelectedFile}
             setIsDeleteAvt={setIsDeleteAvt}
           />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
           name="name"
@@ -180,7 +166,7 @@ const FormPost = (props: any) => {
           rules={[
             {
               required: true,
-              message: 'Please input your E-mail!',
+              message: 'User name is required!',
               whitespace: true,
             },
           ]}
@@ -199,7 +185,7 @@ const FormPost = (props: any) => {
             },
             {
               required: true,
-              message: 'Please input your E-mail!',
+              message: 'User email is required!',
             },
           ]}
         >
@@ -215,7 +201,7 @@ const FormPost = (props: any) => {
               : [
                   {
                     required: true,
-                    message: 'Please input your password!',
+                    message: 'User password is required!',
                   },
                   {
                     min: 6,
@@ -240,54 +226,35 @@ const FormPost = (props: any) => {
               : [
                   {
                     required: true,
-                    message: 'Please confirm your password!',
+                    message: 'Please confirm user password!',
                   },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value || getFieldValue('password') === value) {
-                        return Promise.resolve()
-                      }
-                      return Promise.reject(
-                        new Error(
-                          'The new password that you entered do not match!',
-                        ),
-                      )
-                    },
-                  }),
                 ]
           }
         >
           <Input.Password />
         </Form.Item>
 
-        <Form.Item
-          name="gender"
-          label="Gender"
-          rules={[{ required: true, message: 'Please select gender!' }]}
-        >
-          <Select placeholder="select your gender">
+        <Form.Item name="gender" label="Gender">
+          <Select placeholder="Select user gender">
             <Option value="1">Male</Option>
             <Option value="2">Female</Option>
+            <Option value="3">Other</Option>
           </Select>
         </Form.Item>
 
-        <Form.Item
-          name="status"
-          label="Status"
-          rules={[{ required: true, message: 'Please select status!' }]}
-        >
-          <Select placeholder="select your status">
-            <Option value="1">Active</Option>
-            <Option value="0">Block</Option>
+        <Form.Item name="status" label="Status">
+          <Select placeholder="Select user status">
+            <Option value="0">Active</Option>
+            <Option value="1">Inactive</Option>
           </Select>
         </Form.Item>
 
         <Form.Item
           name="role_id"
           label="Role"
-          rules={[{ required: true, message: 'Please select gender!' }]}
+          rules={[{ required: true, message: 'User role is required!' }]}
         >
-          <Select placeholder="select your role">
+          <Select placeholder="Select user role">
             {roles.map((role: any) => {
               return (
                 <Option key={role.id} value={`${role.id}`}>
@@ -307,10 +274,6 @@ const FormPost = (props: any) => {
           label="Phone Number"
           rules={[
             {
-              required: true,
-              message: 'Please input your phone!',
-            },
-            {
               pattern: new RegExp(/^(0[1-9][0-9]{8})$/, 'g'),
               message: 'This is not a phone number',
             },
@@ -318,34 +281,26 @@ const FormPost = (props: any) => {
         >
           <Input />
         </Form.Item>
-
-        <Form.Item
-          name="birth"
-          label="Date of Birth"
-          validateStatus={error?.dob ? 'error' : ''}
-          help={error?.dob ? 'The day field must be a date before today' : ''}
-        >
-          <DatePicker
-            onChange={(date: any) => {
-              handleDatePickerChange(date)
-            }}
-            wrapperClassName="datePicker"
-            dateFormat={'dd-MM-yyyy'}
-            selected={startDate}
-            isClearable
-            placeholderText="Input your birth!"
-          />
-        </Form.Item>
-        <Form.Item name="details" label="Details">
+        <Form.Item name="details" label="Description">
           <Input.TextArea showCount maxLength={100} />
         </Form.Item>
-        <Form.Item {...summitButtonLayout}>
-          <Button type="primary" htmlType="submit">
-            Save
+        <div className="flex justify-end">
+          <Form.Item className="mr-3">
+            <Button type="primary" htmlType="submit">
+              Save
+            </Button>
+          </Form.Item>
+          <Button
+            type="primary"
+            className="bg-gray-500"
+            onClick={() => {
+              navigate('/users/')
+            }}
+          >
+            Cancel
           </Button>
-        </Form.Item>
+        </div>
       </Form>
-      {isLoading ? <Spinner /> : ''}
     </>
   )
 }

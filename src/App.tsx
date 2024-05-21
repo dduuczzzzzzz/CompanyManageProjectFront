@@ -17,6 +17,9 @@ import roleRouter from './libs/constants/router/role'
 import PermissionsRoute from './components/PermissionsRoute'
 import attendanceRouter from './libs/constants/router/attendance'
 import teamRouter from './libs/constants/router/team'
+import CheckInPage from './pages/Session/checkIn'
+import CheckOutPage from './pages/Session/checkOut'
+import sessionRouter from './libs/constants/router/session'
 
 const queryClient = new QueryClient()
 
@@ -96,6 +99,29 @@ const router = createBrowserRouter(
             />
           )
         })}
+        {sessionRouter.map((router) => {
+          return (
+            <Route
+              key={router.path}
+              path={router.path}
+              element={
+                <PermissionsRoute permissions={router.permissions}>
+                  {router.element}
+                </PermissionsRoute>
+              }
+            />
+          )
+        })}
+        <Route
+          path="session/check-in"
+          element={<CheckInPage />}
+          key="session/check-in"
+        />
+        <Route
+          path="session/check-out"
+          element={<CheckOutPage />}
+          key="session/check-in"
+        />
       </Route>
       <Route path="/login" element={<LoginPage />} key="login" />
     </>,

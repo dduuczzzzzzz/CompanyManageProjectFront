@@ -5,6 +5,8 @@ import { Team } from './interface'
 import type { ColumnsType } from 'antd/es/table'
 import { useNavigate } from 'react-router-dom'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { TEAM_ADD } from '../../libs/constants/Permissions'
 
 interface Props {
   listTeam: Team[]
@@ -112,19 +114,28 @@ const ListOfTeam: React.FC<Props> = ({
       render: (_, data) => (
         <Space size="middle">
           {permissionsInfo &&
-            permissionsUpdate.every((element: string) =>
-              permissionsInfo.includes(element),
-            ) && (
-              <Button danger type="primary" onClick={() => deleteTeam(data.id)}>
-                Delete
-              </Button>
-            )}
-          {permissionsInfo &&
             permissionsDelete.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Button type="primary" onClick={() => updateTeam(data.id)}>
-                Update
+              <Button
+                type="primary"
+                onClick={() => updateTeam(data.id)}
+                className="rounded-full"
+              >
+                <EditOutlined />
+              </Button>
+            )}
+          {permissionsInfo &&
+            permissionsUpdate.every((element: string) =>
+              permissionsInfo.includes(element),
+            ) && (
+              <Button
+                danger
+                type="primary"
+                onClick={() => deleteTeam(data.id)}
+                className="rounded-full"
+              >
+                <DeleteOutlined />
               </Button>
             )}
         </Space>
@@ -188,19 +199,28 @@ const ListOfTeam: React.FC<Props> = ({
       render: (_, data) => (
         <Space size="middle">
           {permissionsInfo &&
-            permissionsUpdate.every((element: string) =>
-              permissionsInfo.includes(element),
-            ) && (
-              <Button danger type="primary" onClick={() => deleteTeam(data.id)}>
-                Delete
-              </Button>
-            )}
-          {permissionsInfo &&
             permissionsDelete.every((element: string) =>
               permissionsInfo.includes(element),
             ) && (
-              <Button type="primary" onClick={() => updateTeam(data.id)}>
-                Update
+              <Button
+                type="primary"
+                onClick={() => updateTeam(data.id)}
+                className="rounded-full"
+              >
+                <EditOutlined />
+              </Button>
+            )}
+          {permissionsInfo &&
+            permissionsUpdate.every((element: string) =>
+              permissionsInfo.includes(element),
+            ) && (
+              <Button
+                danger
+                type="primary"
+                onClick={() => deleteTeam(data.id)}
+                className="rounded-full"
+              >
+                <DeleteOutlined />
               </Button>
             )}
         </Space>
@@ -210,6 +230,24 @@ const ListOfTeam: React.FC<Props> = ({
 
   return (
     <>
+      <div className="mb-8">
+        {permissionsInfo &&
+          TEAM_ADD.every((element: string) =>
+            permissionsInfo.includes(element),
+          ) && (
+            <Button
+              type="primary"
+              onClick={() => {
+                navigate('/teams/create', { state: { teamId } })
+              }}
+              style={{ marginBottom: 10 }}
+              className="mb-8 bg-green-500 float-right focus:bg-green-400"
+            >
+              Create New Team
+            </Button>
+          )}
+      </div>
+
       <Filter
         valueFilter={filter}
         setFilter={setFilter}
@@ -217,43 +255,53 @@ const ListOfTeam: React.FC<Props> = ({
         handleReset={resetTable}
       />
 
-      <Button
-        type="primary"
-        onClick={() => {
-          navigate('/teams/create', { state: { teamId } })
-        }}
-        style={{ marginBottom: 10 }}
-      >
-        Create New Team
-      </Button>
       {isLoading ? (
         <Spin className="flex justify-center" />
       ) : isSubteam ? (
         <Table
           columns={lists}
           dataSource={listTeam}
-          bordered={true}
-          pagination={false}
           rowKey="id"
+          pagination={{
+            defaultPageSize: 10,
+            total: total,
+            onChange: (page, pageSize) => {
+              setFilter((filter: any) => ({
+                ...filter,
+                page: page,
+                limit: pageSize,
+              }))
+            },
+          }}
         />
       ) : (
         <Table
           columns={listsMain}
           dataSource={listTeam}
-          bordered={true}
-          pagination={false}
           rowKey="id"
+          pagination={{
+            defaultPageSize: 10,
+            total: total,
+            current: Number(filter.page),
+            onChange: (page, pageSize) => {
+              setFilter((filter: any) => ({
+                ...filter,
+                page: page,
+                limit: pageSize,
+              }))
+            },
+          }}
         />
       )}
 
-      <Pagination
+      {/* <Pagination
         showQuickJumper
         defaultCurrent={1}
         total={total}
         showSizeChanger={true}
         onChange={onChange}
         style={{ marginLeft: 500, marginTop: 10 }}
-      />
+      /> */}
     </>
   )
 }

@@ -10,7 +10,12 @@ import {
   Avatar,
   notification,
   Spin,
+  Upload,
+  UploadProps,
+  UploadFile,
 } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
+
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../components/layouts/main'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
@@ -100,8 +105,7 @@ const AddEventPage = () => {
         })
       }
 
-      formData.append('name', data.name)
-      formData.append('link', data.link || '')
+      formData.append('name', data.name || '')
       formData.append('location', data.location || '')
       formData.append('description', data.details || '')
       formData.append('sendMail', data.sendMail)
@@ -159,19 +163,18 @@ const AddEventPage = () => {
       }
 
       return chunks.map((chunk, index) => (
-        <div className="flex justify-center ml-10 mb-4" key={index}>
+        <div className="flex justify-start mb-4" key={index}>
           {chunk.map((filee: any, fileIndex: number) => (
-            <div key={fileIndex}>
-              <p>Tên tệp: {filee.name}</p>
-              <Button
-                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
-                onClick={() => handleFileDelete(fileIndex)}
-              />
+            <div key={fileIndex} className="flex justify-center mb-4">
               <Avatar
                 src={URL.createObjectURL(filee)}
                 alt="avatar"
                 className="w-[150px] h-[150px] flex justify-center m-1"
               ></Avatar>
+              <Button
+                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
+                onClick={() => handleFileDelete(fileIndex)}
+              />
             </div>
           ))}
         </div>
@@ -183,9 +186,24 @@ const AddEventPage = () => {
     updatedFile.splice(index, 1)
     setFile(updatedFile)
   }
+
+  const beforeUpload = (file: UploadFile) => {
+    setFile([file])
+    return false
+  }
+
+  const removeImageHandler = () => {
+    setFile([])
+  }
+
+  const changeIMGHandler: UploadProps['onChange'] = ({
+    fileList: newFileList,
+  }) => {
+    setFile(newFileList)
+  }
   return (
     <MainLayout>
-      <h1 className="text-sky-500 flex justify-center">Thêm event </h1>
+      <h1 className="text-sky-500 flex justify-center">Add event </h1>
       {isLoading ? (
         <Spin className="flex justify-center" />
       ) : (
@@ -196,7 +214,13 @@ const AddEventPage = () => {
                 <Form.Item
                   className="ml-10 mr-10"
                   name="name"
-                  label="Tên event"
+                  label="Event name"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Event name is required!',
+                    },
+                  ]}
                 >
                   <Input />
                 </Form.Item>
@@ -205,7 +229,7 @@ const AddEventPage = () => {
                 <Form.Item
                   className="ml-10 mr-10"
                   name="type"
-                  label="Loại event"
+                  label="Event type"
                   initialValue={1}
                 >
                   {options && (
@@ -223,7 +247,13 @@ const AddEventPage = () => {
                 <Form.Item
                   className=" ml-10 mr-10"
                   name="time"
-                  label="Thời gian tổ chức"
+                  label="Event time"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Event time is required!',
+                    },
+                  ]}
                 >
                   <RangePicker
                     className="w-full"
@@ -240,19 +270,12 @@ const AddEventPage = () => {
                   />
                 </Form.Item>
               </Col>
-            </Row>
-            <Row>
               <Col span={12}>
                 <Form.Item
                   className="ml-10 mr-10"
                   name="location"
-                  label="Địa điểm"
+                  label="Location"
                 >
-                  <Input />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item className="ml-10 mr-10" name="link" label="Link">
                   <Input />
                 </Form.Item>
               </Col>
@@ -264,10 +287,10 @@ const AddEventPage = () => {
             >
               <Input.TextArea rows={3} />
             </Form.Item>
-            <div className="justify-center ml-10 mb-4">
+            <div className="justify-start ml-10 mb-4">
               {renderFilePreview()}
             </div>
-            <div className="flex justify-center ml-10 mb-4">
+            <div className="flex justify-start ml-10 mb-4">
               <input
                 ref={inputRef}
                 type="file"
@@ -279,25 +302,25 @@ const AddEventPage = () => {
               className="ml-10 mr-10"
               name="sendMail"
               valuePropName="checked"
-              initialValue="0"
+              initialValue="1"
             >
-              <Checkbox value="1">Gửi mail cho tất cả nhân viên</Checkbox>
+              <Checkbox value="1">Send mail to all people ?</Checkbox>
             </Form.Item>
-            <Form.Item className="flex justify-center">
+            <Form.Item className="flex justify-end">
               <Button
-                type="dashed"
-                className="w-[110px] text-white m-5 bg-green-500 items-center rounded-full"
+                type="primary"
+                className="mr-3"
                 htmlType="submit"
                 onClick={handleSubmit}
               >
-                Thêm event
+                Save
               </Button>
               <Button
-                type="dashed"
-                className="w-[110px] text-white bg-red-500 m-5 items-center rounded-full"
+                type="primary"
+                className="bg-gray-500"
                 onClick={handleCancel}
               >
-                Hủy
+                Cancel
               </Button>
             </Form.Item>
           </Form>

@@ -3,6 +3,8 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   DownOutlined,
+  LogoutOutlined,
+  ProfileOutlined,
 } from '@ant-design/icons'
 import { Layout, Button, Avatar, Dropdown, Space } from 'antd'
 import type { MenuProps } from 'antd'
@@ -30,9 +32,10 @@ const items: MenuProps['items'] = [
   {
     label: (
       <Link to="/profile">
-        <Button type="text" className="w-full bg-sky-500">
+        <div>
+          <ProfileOutlined className="mr-2" />
           Profile
-        </Button>
+        </div>
       </Link>
     ),
     key: 'profile',
@@ -42,13 +45,10 @@ const items: MenuProps['items'] = [
   },
   {
     label: (
-      <Button
-        type="default"
-        onClick={handleLogout}
-        className="w-full bg-red-500"
-      >
+      <div onClick={handleLogout}>
+        <LogoutOutlined className="mr-2" />
         Log Out
-      </Button>
+      </div>
     ),
     key: 'logout',
   },
@@ -80,7 +80,7 @@ const CustomHeader = ({ colorBgContainer }: Props) => {
           >
             <Space>
               <Avatar
-                src={`${user?.avatar}`}
+                src={user?.avatar ? `${user?.avatar}` : './uet.png'}
                 className="h-8 ml-6 mb-6 mt-4"
               />
               {user?.name || 'user name'}

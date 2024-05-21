@@ -17,7 +17,11 @@ import { ParamsRole, Role } from '../../types/role'
 import { deleteRole, role } from '../../services/role'
 import { ROLES_ID } from '../../libs/constants/roles'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
-import { ROLE_DELETE, ROLE_UPDATE } from '../../libs/constants/Permissions'
+import {
+  ROLE_ADD,
+  ROLE_DELETE,
+  ROLE_UPDATE,
+} from '../../libs/constants/Permissions'
 import { key } from 'localforage'
 import { roles } from 'aria-query'
 const RolePage = () => {
@@ -101,8 +105,7 @@ const RolePage = () => {
         let cr_id = id
         return (
           <>
-            {cr_id !== ROLES_ID.ADMIN_ID &&
-              permissionsInfo &&
+            {permissionsInfo &&
               ROLE_UPDATE.every((element: string) =>
                 permissionsInfo.includes(element),
               ) && (
@@ -110,7 +113,7 @@ const RolePage = () => {
                   <Link to={`/role/update/${cr_id}`}>
                     <Button
                       type="primary"
-                      className=" text-white  bg-sky-500 m-1 rounded-full"
+                      className="m-1 rounded-full"
                       htmlType="submit"
                     >
                       <EditOutlined />
@@ -125,12 +128,13 @@ const RolePage = () => {
               ) && (
                 <>
                   <Button
+                    danger
                     type="primary"
                     onClick={() => {
                       showModal()
                       setIdDelete(cr_id)
                     }}
-                    className=" text-white bg-red-500 m-1 rounded-full"
+                    className="m-1 rounded-full"
                   >
                     <DeleteOutlined />
                   </Button>
@@ -196,15 +200,20 @@ const RolePage = () => {
         <Spin className="flex justify-center" />
       ) : (
         <>
-          <Button
-            type="primary"
-            className="mb-5 bg-green-500 float-right"
-            onClick={() => {
-              navigate('/role/add')
-            }}
-          >
-            Create New Role
-          </Button>
+          {permissionsInfo &&
+            ROLE_ADD.every((element: string) =>
+              permissionsInfo.includes(element),
+            ) && (
+              <Button
+                type="primary"
+                className="mb-5 bg-green-500 float-right focus:bg-green-400"
+                onClick={() => {
+                  navigate('/role/add')
+                }}
+              >
+                Create New Role
+              </Button>
+            )}
           <Table
             columns={columns}
             dataSource={data}
@@ -223,7 +232,7 @@ const RolePage = () => {
             onOk={() => handleDeleteRole()}
             onCancel={handleCancel}
           >
-            <p>"Are you sure to delete this role?"</p>
+            <p>Are you sure to delete this role?</p>
           </Modal>
         </>
       )}

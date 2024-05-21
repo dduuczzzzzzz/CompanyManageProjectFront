@@ -3,8 +3,10 @@ import { useMutation } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { LoginRequest, login } from '../../services/authentication'
 import HomeLayout from '../../components/layouts/home'
+import { MailOutlined, LockOutlined } from '@ant-design/icons'
 
 import { useNavigate } from 'react-router-dom'
+import { p } from '@fullcalendar/core/internal-common'
 const LoginPage = () => {
   const navigate = useNavigate()
   const user = localStorage.getItem('user_info')
@@ -24,7 +26,7 @@ const LoginPage = () => {
         'permissions',
         JSON.stringify(res.data.data.permission),
       )
-      navigate('/')
+      navigate('/profile')
     } catch (err: any) {
       // xử lý khi đăng nhập thất bại
       if (err.response.data.errors) {
@@ -67,18 +69,19 @@ const LoginPage = () => {
   }
   useEffect(() => {
     if (user) {
-      navigate('/')
+      navigate('/profile')
     }
   }, [user])
   return (
     <HomeLayout>
-      <div className="bg-sky-500  min-h-screen min-w-screen flex justify-center items-center">
-        <div className="bg-white p-6 w-3/5 h-1/2 rounded-30px overflow-hidden flex">
-          <div className="w-1/2 hg_login bg-cover bg-no-repeat border-radius-30px block bg-login bg-center"></div>
-          <div className="w-1/2">
-            <div className="flex flex-col ml-20 mr-20">
-              <h2>Đăng nhập tài khoản của bạn</h2>
-              <p>Để sử dụng dịch vụ của chúng tôi</p>
+      <div className="bg-gradient-to-r from-cyan-300 to-blue-500  min-h-screen min-w-screen flex justify-center items-center">
+        <div className="bg-white p-6 w-3/5 h-2/3 rounded-30px overflow-hidden flex rounded-lg">
+          <div className="w-1/2 hg_login bg-no-repeat border-radius-30px block bg-login bg-center"></div>
+          <div className="w-1/2 border-l-4 border">
+            <div className="flex flex-col ml-10 mr-10">
+              <p className="text-center text-cyan-500 text-lg font-bold">
+                LOGIN PAGE
+              </p>
               <br />
               <Form
                 name="basic"
@@ -87,49 +90,40 @@ const LoginPage = () => {
                 layout="vertical"
                 form={antForm}
               >
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[
-                    { required: true, message: 'Please input your email!' },
-                    {
-                      type: 'email',
-                      message: 'Please type email for your input',
-                    },
-                  ]}
-                >
-                  <Input onChange={handleChange} />
+                <Form.Item label="Email" name="email">
+                  <Input
+                    onChange={handleChange}
+                    prefix={
+                      <MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />
+                    }
+                  />
                 </Form.Item>
 
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[
-                    { required: true, message: 'Please input your password!' },
-                    {
-                      min: 6,
-                      message: 'Password must be at least 6 characters',
-                    },
-                  ]}
-                >
-                  <Input.Password onChange={handleChange} />
+                <Form.Item name="password" label="Password">
+                  <Input.Password
+                    onChange={handleChange}
+                    prefix={
+                      <LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />
+                    }
+                  />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   name="remember"
                   valuePropName="checked"
                   wrapperCol={{ offset: 8, span: 16 }}
                 >
                   <Checkbox>Remember me</Checkbox>
-                </Form.Item>
+                </Form.Item> */}
 
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Form.Item>
                   <Button
                     type="primary"
                     htmlType="submit"
                     onClick={handleSubmit}
+                    className="w-full"
                   >
-                    Đăng nhập
+                    Login
                   </Button>
                 </Form.Item>
               </Form>

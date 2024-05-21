@@ -1,6 +1,6 @@
 import { Select } from 'antd'
 import { useEffect, useState } from 'react'
-import { getRole } from '../../services/request/user'
+import { getAllRole, getRole } from '../../services/request/user'
 
 const { Option } = Select
 
@@ -9,11 +9,13 @@ export const RoleSelect = ({
   handleCHange,
   valueInput,
   setRole,
+  placeHolder,
 }: {
   className: string
   handleCHange: any
   valueInput: string
   setRole: any
+  placeHolder?: string
 }) => {
   const [roles, setRoles] = useState([])
 
@@ -22,25 +24,21 @@ export const RoleSelect = ({
   }, [])
 
   const getRoles = async () => {
-    const response = await getRole()
+    const response = await getAllRole()
     setRoles(response)
   }
   return (
     <>
       <Select
+        placeholder={placeHolder}
         className={'w-28' + className}
+        allowClear
         onChange={(event) => {
           handleCHange('role', event)
         }}
       >
         {roles.map((role: any, index: number) => {
-          return (
-            <Option
-              key={role.id}
-            >
-              {role.role_name}
-            </Option>
-          )
+          return <Option key={role.id}>{role.role_name}</Option>
         })}
       </Select>
     </>

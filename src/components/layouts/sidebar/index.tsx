@@ -7,6 +7,7 @@ import {
   CalendarOutlined,
   AuditOutlined,
   CarryOutOutlined,
+  VideoCameraOutlined,
 } from '@ant-design/icons'
 import { Layout, Menu } from 'antd'
 import SideBarLogo from './SideBarLogo'
@@ -25,12 +26,12 @@ import {
   PROFILE,
   ROLE_ADD,
   ROLE_LIST,
+  SESSION_LIST,
   TEAM_ADD,
   TEAM_LIST,
   TEAM_LIST_SUB,
   USER_ADD,
   USER_DELETE_MULTI,
-  USER_IMPORT,
   USER_LIST,
 } from '../../../libs/constants/Permissions'
 import { key } from 'localforage'
@@ -64,10 +65,6 @@ const Sidebar = () => {
             label: 'Add user',
             key: '/users/add',
           }),
-          checkChildrenSidebar(USER_IMPORT, {
-            label: 'Import user',
-            key: '/users/import/',
-          }),
         ],
       }),
 
@@ -91,10 +88,6 @@ const Sidebar = () => {
         icon: <TeamOutlined />,
         label: 'Teams',
         children: [
-          checkChildrenSidebar(TEAM_ADD, {
-            label: 'Create New Team',
-            key: '/teams/create',
-          }),
           checkChildrenSidebar(TEAM_LIST, {
             label: 'Main Teams',
             key: '/teams/',
@@ -102,6 +95,10 @@ const Sidebar = () => {
           checkChildrenSidebar(TEAM_LIST_SUB, {
             label: 'Sub Teams',
             key: '/teams/sub-teams',
+          }),
+          checkChildrenSidebar(TEAM_ADD, {
+            label: 'Create New Team',
+            key: '/teams/create',
           }),
         ],
       }),
@@ -113,10 +110,6 @@ const Sidebar = () => {
           checkChildrenSidebar(ATTENDANCE_LIST, {
             label: 'Attendances list',
             key: '/attendance',
-          }),
-          checkChildrenSidebar(ATTENDANCE_IMPORT, {
-            label: 'Import attendance',
-            key: '/attendance/import',
           }),
         ],
       }),
@@ -135,6 +128,27 @@ const Sidebar = () => {
           }),
         ],
       }),
+      checkParentSidebar([], {
+        key: 'sessions',
+        icon: <VideoCameraOutlined />,
+        label: 'Session',
+        children: [
+          {
+            label: 'Check In/Out',
+            key: '/session/check-in',
+          },
+          checkChildrenSidebar(SESSION_LIST, {
+            label: 'Session list',
+            key: '/session',
+          }),
+        ],
+      }),
+      // {
+      //   key: '/check-in',
+      //   icon: <VideoCameraOutlined />,
+      //   label: 'Session',
+      //   children: null,
+      // },
       checkParentSidebar(PROFILE, {
         key: '/profile',
         icon: <ProfileOutlined />,

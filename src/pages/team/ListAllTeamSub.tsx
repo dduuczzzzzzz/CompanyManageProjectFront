@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import MainLayout from '../../components/layouts/main'
 import axiosInstance from '../../services/request/base'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import ModalCreateTeam from './ModalCreateTeam'
 import ModalRemove from './ModalRemove'
 import ListOfTeam from '../../components/teams/ListOfTeam'
@@ -77,11 +77,27 @@ const ListAllTeamSub = () => {
       setOpenModalDelete(false)
       await getListSubTeam()
       setTimeout(() => {
-        message.success('Delete Successful')
+        notification['success']({
+          key: 'delete',
+          duration: 5,
+          message: 'Delete team successfully',
+        })
       }, 500)
     } else {
+      setOpenModalDelete(false)
       setTimeout(() => {
-        message.error('Delete Fail')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: 'Delete fail!',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 500)
     }
   }
@@ -105,12 +121,27 @@ const ListAllTeamSub = () => {
         setOpenModalUpdateTeam(false)
         await getListSubTeam()
         setTimeout(() => {
-          message.success('Update Team Successful')
+          notification['success']({
+            key: 'update success',
+            duration: 5,
+            message: 'Update team successfully',
+          })
         }, 50)
       }
     } catch (error) {
       setTimeout(() => {
-        message.error('The name has already been taken.')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: 'The name has already been taken',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 50)
     }
   }
@@ -157,7 +188,7 @@ const ListAllTeamSub = () => {
         <ModalCreateTeam
           openModal={setOpenModalUpdateTeam}
           onCreate={onUpdate}
-          blog={'UPDATE'}
+          blog={'Update'}
           team={teamCheck}
           checkListMain={false}
         />

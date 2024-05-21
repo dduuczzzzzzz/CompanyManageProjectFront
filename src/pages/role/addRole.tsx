@@ -15,6 +15,7 @@ const AddRolePage = () => {
         message: 'Add role successful',
         description: res.data.message,
       })
+      navigate('/role/')
     } catch (err: any) {
       if (err.response.data.errors) {
         const errorMessages = Object.values(err.response.data.errors)
@@ -40,7 +41,6 @@ const AddRolePage = () => {
         })
       }
     }
-    navigate('/role/')
   }
   const handleCancel = () => {
     navigate('/role/')
@@ -48,44 +48,62 @@ const AddRolePage = () => {
 
   return (
     <MainLayout>
-      <h1 className="text-sky-500 flex justify-center">Thêm role </h1>
-      <Form name="update-profile" layout="vertical" form={antForm}>
-        <Row>
-          <Col span={12}>
-            <Form.Item
-              className="ml-10 mr-10"
-              name="role_name"
-              label="Tên role"
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item
-          name="description"
-          className="ml-10 mr-10 "
-          label="Description"
+      <h1 className="text-sky-500 flex justify-center">Add role </h1>
+      <div className="w-full flex justify-center">
+        <Form
+          className="w-3/4"
+          name="update-profile"
+          layout="vertical"
+          form={antForm}
         >
-          <Input.TextArea rows={3} />
-        </Form.Item>
-        <Form.Item className="flex justify-center">
-          <Button
-            type="dashed"
-            className="w-[110px] text-white m-5 bg-green-500 items-center rounded-full"
-            htmlType="submit"
-            onClick={handleSubmit}
+          <Form.Item
+            className="ml-10 mr-10"
+            name="role_name"
+            label="Role name:"
+            rules={[
+              {
+                required: true,
+                message: 'Role name is required!',
+                whitespace: true,
+              },
+            ]}
           >
-            Thêm role
-          </Button>
-          <Button
-            type="dashed"
-            className="w-[110px] text-white bg-red-500 m-5 items-center rounded-full"
-            onClick={handleCancel}
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="description"
+            className="ml-10 mr-10 "
+            label="Description:"
+            rules={[
+              {
+                required: true,
+                message: 'Role description is required!',
+                whitespace: true,
+              },
+            ]}
           >
-            Hủy
-          </Button>
-        </Form.Item>
-      </Form>
+            <Input.TextArea rows={3} />
+          </Form.Item>
+          <Form.Item className="flex justify-end">
+            <Button
+              type="primary"
+              className="mr-3"
+              htmlType="submit"
+              onClick={handleSubmit}
+            >
+              Save
+            </Button>
+            <Button
+              type="primary"
+              className="bg-gray-500"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </MainLayout>
   )
 }

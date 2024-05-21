@@ -1,0 +1,12 @@
+.fc-scroller {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+}
+
+.fc-dayGridMonth-view.fc-dayGridMonth-view-scroll {
+  overflow-y: hidden;
+}
+
+.fc .fc-popover {
+  z-index: 1;
+}

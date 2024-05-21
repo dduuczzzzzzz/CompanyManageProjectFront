@@ -1,17 +1,11 @@
-import {
-  Button,
-  FormInstance,
-  Modal,
-  Popconfirm,
-  notification,
-} from 'antd'
+import { Button, FormInstance, Modal, Popconfirm, notification } from 'antd'
 import EditAttendanceForm from './EditAttendanceForm'
 import { User } from '../../types/user'
 import { AttendanceFormData, AttendanceType } from '../../types/attendance'
 import { ATTENDANCE_STATUS } from '../../libs/constants/Attendance'
 import { deleteAttendanceAPI } from '../../services/request/attendance'
 import { AttendanceListLoader } from '../../pages/attendance'
-import { getPermissions } from '../../libs/helpers/getLocalStorage'
+import { getPermissions, getUser } from '../../libs/helpers/getLocalStorage'
 import {
   ATTENDANCE_DELETE,
   ATTENDANCE_UPDATE,
@@ -42,10 +36,12 @@ const EditAttendanceModal = ({
   form,
   getNewAttendanceList,
   searchParams,
-  setLoading
+  setLoading,
 }: Props) => {
-  const notReviewed =
-    data?.extendedProps?.status === ATTENDANCE_STATUS.NOT_REVIEWED
+  const user_info = getUser()
+  const userAttendance = user_info.id === data?.created_by_id
+  const title = data?.title
+  const notReviewed = data?.status === ATTENDANCE_STATUS.NOT_REVIEWED
   const editAttendance = () => {
     form?.submit()
   }
@@ -89,9 +85,9 @@ const EditAttendanceModal = ({
   const permissionsInfo = getPermissions()
   return (
     <>
-      {notReviewed && (
+      {notReviewed && userAttendance && (
         <Modal
-          title="Attendance"
+          title={title}
           open={open}
           onCancel={onCancel}
           destroyOnClose={true}
@@ -138,9 +134,9 @@ const EditAttendanceModal = ({
           />
         </Modal>
       )}
-      {!notReviewed && (
+      {(!notReviewed || !userAttendance) && (
         <Modal
-          title="Attendance"
+          title={title}
           open={open}
           onOk={editAttendance}
           onCancel={onCancel}

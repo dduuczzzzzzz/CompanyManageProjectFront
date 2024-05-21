@@ -1,7 +1,7 @@
 import MainLayout from '../../components/layouts/main'
 import axiosInstance from '../../services/request/base'
 import { useEffect, useState } from 'react'
-import { Alert, Spin, message } from 'antd'
+import { Alert, Spin, message, notification } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { Team } from '../../components/teams/interface'
 import ModalRemove from '../team/ModalRemove'
@@ -82,12 +82,29 @@ const TeamPage = () => {
         setOpenModalDelete(false)
         await getListTeam()
         setTimeout(() => {
-          message.success('Delete Successful')
+          notification['success']({
+            key: 'delete success',
+            duration: 5,
+            message: 'Delete team successfully',
+          })
         }, 50)
       }
     } catch (error) {
+      setOpenModalDelete(false)
       setTimeout(() => {
-        message.error('It is not possible to delete a team that has sub teams')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html:
+                  'It is not possible to delete a team that has sub teams',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 50)
     }
   }
@@ -111,13 +128,27 @@ const TeamPage = () => {
         setOpenModalUpdateTeam(false)
         await getListTeam()
         setTimeout(() => {
-          message.success('Update Team Successful')
-          setShowAlert(true)
+          notification['success']({
+            key: 'update',
+            duration: 5,
+            message: 'Update team successfully',
+          })
         }, 50)
       }
     } catch (error) {
       setTimeout(() => {
-        message.error('The name has already been taken.')
+        notification['error']({
+          duration: 5,
+          message: 'Error',
+          description: (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: 'The name has already been taken.',
+              }}
+              className="text-red-500"
+            />
+          ),
+        })
       }, 50)
     }
   }
@@ -172,7 +203,7 @@ const TeamPage = () => {
         <ModalCreateTeam
           openModal={setOpenModalUpdateTeam}
           onCreate={onUpdate}
-          blog={'UPDATE'}
+          blog={'Update'}
           team={teamCheck}
           checkListMain={true}
         />

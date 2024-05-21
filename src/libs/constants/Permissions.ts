@@ -6,10 +6,10 @@ export const USER_DELETE = ['user.delete']
 export const USER_DELETE_MULTI = ['user.force_delete_multi']
 export const USER_RESTORE = ['user.restore', 'user.restore_multi']
 export const USER_UPDATE = ['user.show', 'user.update']
-export const USER_IMPORT = []
+export const USER_EXPORT = ['user.export']
 
-export const EVENT_LIST = ['event.getType', 'event.list']
-export const EVENT_ADD = ['event.getType', 'event.store']
+export const EVENT_LIST = ['event.list']
+export const EVENT_ADD = ['event.store']
 export const EVENT_DELETE = ['event.delete']
 export const EVENT_UPDATE = ['event.edit', 'event.update']
 
@@ -38,3 +38,5 @@ export const ATTENDANCE_IMPORT = [
   'attendance.exportTemplate',
 ]
 export const ATTENDANCE_EXPORT_TEMPLATE = ['attendance.exportTemplate']
+export const SESSION_LIST = ['session.list']
+export const SESSION_EXPORT = ['session.export']

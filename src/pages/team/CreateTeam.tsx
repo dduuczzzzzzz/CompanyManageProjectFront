@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Select, Spin, message } from 'antd'
+import { Button, Form, Input, Select, Spin, message, notification } from 'antd'
 import MainLayout from '../../components/layouts/main'
 import axiosInstance from '../../services/request/base'
 import { User, Team } from '../../components/teams/interface'
@@ -8,17 +8,6 @@ import { useFormik } from 'formik'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { FormInstance } from 'antd/es/form'
 import TextArea from 'antd/es/input/TextArea'
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-}
 
 const summitButtonLayout = {
   wrapperCol: {
@@ -31,7 +20,7 @@ const summitButtonLayout = {
 const errorValidate = {
   wrapperCol: {
     sm: {
-      offset: 4,
+      offset: 2,
     },
   },
 }
@@ -130,7 +119,11 @@ const CreateTeam = () => {
       .then(() => {
         formRef.current?.resetFields()
         setTimeout(() => {
-          message.success('Create Team Successful')
+          notification['success']({
+            key: 'add team success',
+            duration: 5,
+            message: 'Add team successfully',
+          })
           setTimeout(() => {
             navigate(`/teams`)
           }, 50)
@@ -141,11 +134,33 @@ const CreateTeam = () => {
           console.log(error.response)
           if (Number(error.response.status) === 422) {
             setTimeout(() => {
-              message.error(error.response.data.errors.name)
+              notification['error']({
+                duration: 5,
+                message: 'Error',
+                description: (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: error.response.data.errors.name,
+                    }}
+                    className="text-red-500"
+                  />
+                ),
+              })
             }, 50)
           } else if (Number(error.response.status) === 404) {
             setTimeout(() => {
-              message.error(error.response.data.message)
+              notification['error']({
+                duration: 5,
+                message: 'Error',
+                description: (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: error.response.data.message,
+                    }}
+                    className="text-red-500"
+                  />
+                ),
+              })
             }, 50)
           }
         }
@@ -159,12 +174,8 @@ const CreateTeam = () => {
       parent_team_id: location?.state?.teamId,
     },
     validationSchema: Yup.object({
-      name: Yup.string()
-        .required('Required')
-        .min(4, 'Must be 4 characters or more'),
-      details: Yup.string()
-        .required('Required')
-        .min(10, 'Must be 10 characters or more'),
+      name: Yup.string().required('Team name is required'),
+      details: Yup.string().required('Team details is required'),
     }),
     onSubmit: (values) => {
       onCreate(
@@ -180,7 +191,7 @@ const CreateTeam = () => {
     <MainLayout>
       <>
         <div className="... flex items-center justify-center">
-          <h1>Create new team</h1>
+          <h1 className="text-sky-500 flex justify-center">Add Team</h1>
         </div>
         {isLoading ? (
           <Spin className="flex justify-center" />
@@ -189,12 +200,20 @@ const CreateTeam = () => {
             <Form
               id="myForm"
               onFinish={formik.handleSubmit}
-              {...formItemLayout}
               name="createForm"
               className={'w-3/4'}
               scrollToFirstError
             >
-              <Form.Item name="Name" label="Name">
+              <Form.Item
+                name="Name"
+                label="Name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Team name is required!',
+                  },
+                ]}
+              >
                 <Input
                   size="large"
                   value={formik.values.name}
@@ -204,20 +223,16 @@ const CreateTeam = () => {
                 />
               </Form.Item>
               <Form.Item
-                {...errorValidate}
-                style={{ marginTop: -30, marginBottom: -10 }}
+                name="Details"
+                label="Details"
+                className="mb-8"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Team details is required!',
+                  },
+                ]}
               >
-                {formik.errors.name && formik.touched.name ? (
-                  <p
-                    style={{
-                      color: 'red',
-                    }}
-                  >
-                    {formik.errors.name}
-                  </p>
-                ) : null}
-              </Form.Item>
-              <Form.Item name="Details" label="Details">
                 <TextArea
                   rows={4}
                   showCount
@@ -228,20 +243,6 @@ const CreateTeam = () => {
                   name="details"
                   onChange={formik.handleChange}
                 />
-              </Form.Item>
-              <Form.Item
-                {...errorValidate}
-                style={{ marginTop: -30, marginBottom: -10 }}
-              >
-                {formik.errors.details && formik.touched.details ? (
-                  <p
-                    style={{
-                      color: 'red',
-                    }}
-                  >
-                    {formik.errors.details}
-                  </p>
-                ) : null}
               </Form.Item>
               <Form.Item name="Leader" label="Leader">
                 <Select
@@ -286,22 +287,24 @@ const CreateTeam = () => {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item {...summitButtonLayout}>
+              <Form.Item className="flex justify-end">
                 <Button
                   form="myForm"
                   key="submit"
                   htmlType="submit"
                   type="primary"
                 >
-                  Create
+                  Save
                 </Button>
                 <Button
+                  type="primary"
+                  className="bg-gray-500"
                   onClick={() => {
                     navigate(-1)
                   }}
                   style={{ marginLeft: 10 }}
                 >
-                  Back
+                  Cancel
                 </Button>
               </Form.Item>
             </Form>
