@@ -262,8 +262,9 @@ const UpdateProfilePage = () => {
                 className="ml-10 mr-10 "
                 label="Password"
                 rules={[editProfileRules as any]}
+                hasFeedback
               >
-                <Input type="password" name="password" />
+                <Input.Password type="password" name="password" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -272,8 +273,9 @@ const UpdateProfilePage = () => {
                 className="ml-10 mr-10 "
                 label="Confirm password"
                 rules={[editProfileRules as any]}
+                hasFeedback
               >
-                <Input type="password" name="password_confirmation" />
+                <Input.Password type="password" name="password_confirmation" />
               </Form.Item>
             </Col>
           </Row>

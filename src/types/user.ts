@@ -17,6 +17,7 @@ export type FilterType = {
   status: string
   role: string
   page?: any
+  limit?: any
 }
 export type FileType = {
   // value: any

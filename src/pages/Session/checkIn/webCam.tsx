@@ -9,6 +9,7 @@ import {
   getUserFaceRegisterStatusAPI,
   registerUserFaceAPI,
 } from '../../../services/request/user'
+import { LoadingOutlined } from '@ant-design/icons'
 
 const CheckInWebCam = () => {
   // get element
@@ -26,6 +27,7 @@ const CheckInWebCam = () => {
   const [model, setModel] = useState<any>()
   const [loading, setLoading] = useState<boolean>(true)
   const [faceRegist, setFaceRegist] = useState<boolean>(false)
+  const [registering, setRegistering] = useState<boolean>(false)
   const user = getUser()
 
   // let mobilenet: any = undefined
@@ -76,6 +78,7 @@ const CheckInWebCam = () => {
 
   // train and predict model
   async function trainModel() {
+    setRegistering(true)
     predict = false
     try {
       tf.util.shuffleCombo(trainingDataInputs, trainingDataOutputs)
@@ -94,7 +97,15 @@ const CheckInWebCam = () => {
       oneHotOutputs.dispose()
       inputsAsTensor.dispose()
       predict = true
-      const saveResult = await model.save('localstorage://my-model-1')
+      notification['info']({
+        key: 'trainingModel',
+        duration: 5,
+        message: 'Registering ... Please wait!',
+      })
+      // const saveResult = await model.save('localstorage://my-model-1')
+      const saveResult = await model.save(
+        process.env.REACT_APP_API_URL + '/model/upsert',
+      )
       // call API to update user register status
       const result = await registerUserFaceAPI()
       setFaceRegist(true)
@@ -103,8 +114,15 @@ const CheckInWebCam = () => {
         duration: 5,
         message: 'Register face successfully',
       })
+      setRegistering(false)
     } catch (err) {
       console.log(err)
+      setRegistering(false)
+      notification['error']({
+        key: 'registFail',
+        duration: 5,
+        message: 'Error! Try again!',
+      })
     }
   }
 
@@ -273,9 +291,6 @@ const CheckInWebCam = () => {
   }
 
   function gatherDataForClass() {
-    gatherDataState =
-      gatherDataState === STOP_DATA_GATHER ? user.id : STOP_DATA_GATHER
-    dataGatherLoop()
     predictLoop()
     if (Number(predictUserID) !== Number(user.id) && accuracy >= 80) {
       notification['error']({
@@ -285,6 +300,9 @@ const CheckInWebCam = () => {
       })
       return
     }
+    gatherDataState =
+      gatherDataState === STOP_DATA_GATHER ? user.id : STOP_DATA_GATHER
+    dataGatherLoop()
     notification['info']({
       key: 'gatherData',
       duration: 2,
@@ -329,7 +347,9 @@ const CheckInWebCam = () => {
     console.log(JSON.stringify(await tf.io.listModels()))
 
     try {
-      const savedModel = await tf.loadLayersModel('localstorage://my-model-1')
+      const savedModel = await tf.loadLayersModel(
+        process.env.REACT_APP_API_URL + '/model/file',
+      )
       if (savedModel) {
         setSavedModel(savedModel)
       } else {
@@ -421,12 +441,22 @@ const CheckInWebCam = () => {
     return
   }
 
+  async function Test() {
+    await fetch(process.env.REACT_APP_API_URL + '/model/file', {
+      mode: 'cors',
+      method: 'GET',
+      headers: { 'Access-Control-Allow-Origin': '*' },
+    })
+  }
+
   return (
     <>
       <div className="flex justify-center items-center w-full mt-2 mb-4">
         <video id="webcam" autoPlay muted></video>
       </div>
-      <Button onClick={saveModel}>Save Model</Button>
+      {/* <Button onClick={saveModel}>Save Model</Button>
+      <Button onClick={loadMobileNetFeatureModel}>Load Model</Button>
+      <Button onClick={Test}>Test</Button> */}
 
       <div>
         {/* <button id="save-file" onClick={saveModelToFile}>
@@ -447,10 +477,13 @@ const CheckInWebCam = () => {
               className="dataCollector mr-3"
               onMouseDown={gatherDataForClass}
               onMouseUp={gatherDataForClass}
+              disabled={registering}
             >
+              {registering && <LoadingOutlined />}
               Gather Data
             </Button>
-            <Button id="train" onClick={trainModel}>
+            <Button id="train" onClick={trainModel} disabled={registering}>
+              {registering && <LoadingOutlined />}
               Register your face
             </Button>
           </div>

@@ -32,7 +32,6 @@ import {
   TEAM_LIST_SUB,
   USER_ADD,
   USER_DELETE_MULTI,
-  USER_IMPORT,
   USER_LIST,
 } from '../../../libs/constants/Permissions'
 import { key } from 'localforage'

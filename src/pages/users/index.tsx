@@ -6,7 +6,7 @@ import {
   redirect,
   useNavigate,
 } from 'react-router-dom'
-import { Table, Space, Modal, Button, Spin } from 'antd'
+import { Table, Space, Modal, Button, Spin, Pagination } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import MainLayout from '../../components/layouts/main'
 import Filter from '../../components/user/filter'
@@ -20,7 +20,13 @@ import {
   USER_UPDATE,
 } from '../../libs/constants/Permissions'
 import Spinner from '../../components/user/spin'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  DeleteOutlined,
+  UnorderedListOutlined,
+  AppstoreOutlined,
+} from '@ant-design/icons'
+import UserGridCardView from '../../components/user/UserGridCardView'
 
 const ListUsers = () => {
   const permissionsInfo = getPermissions()
@@ -37,6 +43,7 @@ const ListUsers = () => {
   const [isLoading, setIsLoading] = useState<boolean>()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentUserId, setCurrentUserId] = useState<any>(null)
+  const [gridView, setGridView] = useState<boolean>(false)
 
   const navigate = useNavigate()
   const handleDelete = async (key: string) => {
@@ -213,42 +220,60 @@ const ListUsers = () => {
                 Create New User
               </Button>
             )}
+          <Button onClick={() => setGridView(false)} className="mr-2">
+            <UnorderedListOutlined />
+          </Button>
+          <Button onClick={() => setGridView(true)}>
+            <AppstoreOutlined />
+          </Button>
         </div>
         <Filter setFilter={setFilter} filterValue={filter} />
-        {isLoading ? (
-          <Spin className="flex justify-center" />
-        ) : (
+        {isLoading && <Spin className="flex justify-center" />}
+        {!isLoading && gridView && (
+          <UserGridCardView
+            data={users}
+            setCurrentUserId={setCurrentUserId}
+            showModal={showModal}
+          />
+        )}
+        {!isLoading && !gridView && (
           <>
             <Table
               columns={columns}
               dataSource={users}
               rowKey="id"
-              pagination={{
-                defaultPageSize: 10,
-                total: totalUser,
-                current: filter.page,
-                onChange: (page) => {
-                  setFilter((filter: any) => ({ ...filter, page: page }))
-                },
-              }}
+              pagination={false}
             />
-            <Modal
-              title="Delete User"
-              open={isModalOpen}
-              onOk={() => handleDelete(currentUserId)}
-              onCancel={handleCancel}
-            >
-              <p>
-                Are you sure you want to delete&nbsp;
-                {currentUserId &&
-                users.find((user) => user.id === currentUserId)
-                  ? users.find((user) => user.id === currentUserId)?.name
-                  : ''}
-                ?
-              </p>
-            </Modal>
           </>
         )}
+        <Pagination
+          current={filter.page}
+          total={totalUser}
+          showSizeChanger={true}
+          onChange={(page, pageSize) => {
+            setFilter((filter: any) => ({
+              ...filter,
+              page: page,
+              limit: pageSize,
+            }))
+          }}
+          className="mt-10 float-right"
+          style={{ marginTop: 10 }}
+        />
+        <Modal
+          title="Delete User"
+          open={isModalOpen}
+          onOk={() => handleDelete(currentUserId)}
+          onCancel={handleCancel}
+        >
+          <p>
+            Are you sure you want to delete&nbsp;
+            {currentUserId && users.find((user) => user.id === currentUserId)
+              ? users.find((user) => user.id === currentUserId)?.name
+              : ''}
+            ?
+          </p>
+        </Modal>
       </>
     </MainLayout>
   )

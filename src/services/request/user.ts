@@ -225,6 +225,28 @@ export const ImportInfor = async (
     setLoadings(false)
   }
 }
+export const exportUserAPI = (searchParams: URLSearchParams) => {
+  return axiosInstance
+    .get(`/user/exportUser`, {
+      params: searchParams,
+      responseType: 'blob',
+    })
+    .then((value: any) => {
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(value.data)
+
+      // Create an <a> element to trigger the download
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'users.xlsx'
+
+      // Trigger a click event to download the file
+      a.click()
+
+      // Cleanup
+      window.URL.revokeObjectURL(url)
+    })
+}
 
 export const getUserFaceRegisterStatusAPI = () => {
   return axiosInstance.get(`user/regist-face-status`)

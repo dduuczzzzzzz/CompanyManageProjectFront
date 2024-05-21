@@ -3,6 +3,10 @@ import React, { useState, createContext } from 'react'
 import { FilterType } from '../../types/user'
 import { SelectRole } from './selectRole'
 import { RoleSelect } from './roleSelect'
+import { getPermissions } from '../../libs/helpers/getLocalStorage'
+import { USER_EXPORT } from '../../libs/constants/Permissions'
+import { DownloadOutlined } from '@ant-design/icons'
+import { exportUserAPI } from '../../services/request/user'
 
 const { Search } = Input
 const Filter = ({
@@ -12,6 +16,7 @@ const Filter = ({
   setFilter: any
   filterValue: FilterType
 }) => {
+  const permissionsInfo = getPermissions()
   const handleSearch = (name: any, value: any) => {
     if (!value) {
       setFilter((filter: any) => ({ ...filter, [name]: '', page: 1 }))
@@ -23,6 +28,10 @@ const Filter = ({
     setFilter((filter: any) => ({
       page: 1,
     }))
+  }
+  const exportUserHandler = async () => {
+    const searchParams = new URLSearchParams(filterValue)
+    return await exportUserAPI(searchParams)
   }
   return (
     <>
@@ -71,6 +80,14 @@ const Filter = ({
             placeHolder="Select role"
           />
         </div>
+        {permissionsInfo &&
+          USER_EXPORT.every((element: string) =>
+            permissionsInfo.includes(element),
+          ) && (
+            <Button className="ml-auto" onClick={exportUserHandler}>
+              <DownloadOutlined />
+            </Button>
+          )}
       </div>
     </>
   )

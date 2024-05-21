@@ -166,7 +166,7 @@ const FormPost = (props: any) => {
           rules={[
             {
               required: true,
-              message: 'Name field is required!',
+              message: 'User name is required!',
               whitespace: true,
             },
           ]}
@@ -185,7 +185,7 @@ const FormPost = (props: any) => {
             },
             {
               required: true,
-              message: 'Email field is required!',
+              message: 'User email is required!',
             },
           ]}
         >
@@ -281,7 +281,7 @@ const FormPost = (props: any) => {
         >
           <Input />
         </Form.Item>
-        <Form.Item name="details" label="Details">
+        <Form.Item name="details" label="Description">
           <Input.TextArea showCount maxLength={100} />
         </Form.Item>
         <div className="flex justify-end">
