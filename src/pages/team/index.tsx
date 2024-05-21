@@ -90,6 +90,7 @@ const TeamPage = () => {
         }, 50)
       }
     } catch (error) {
+      setOpenModalDelete(false)
       setTimeout(() => {
         notification['error']({
           duration: 5,
@@ -202,7 +203,7 @@ const TeamPage = () => {
         <ModalCreateTeam
           openModal={setOpenModalUpdateTeam}
           onCreate={onUpdate}
-          blog={'UPDATE'}
+          blog={'Update'}
           team={teamCheck}
           checkListMain={true}
         />

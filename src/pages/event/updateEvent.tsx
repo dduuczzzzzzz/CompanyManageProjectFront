@@ -249,7 +249,7 @@ const UpdateEventPage = () => {
   return (
     <MainLayout>
       <h1 className="text-sky-500 flex justify-center">Update event </h1>
-      {isLoading ? (
+      {!res ? (
         <Spin className="flex justify-center" />
       ) : (
         <Form layout="vertical" form={antForm}>
@@ -269,7 +269,7 @@ const UpdateEventPage = () => {
                 className="ml-10 mr-10"
                 name="type"
                 label="Event type"
-                initialValue={res?.type}
+                initialValue={res?.type_id}
               >
                 {options && (
                   <Select
@@ -325,10 +325,10 @@ const UpdateEventPage = () => {
           </Form.Item>
 
           <p className="ml-10 mr-10 ">Image: </p>
-          <div className="justify-start ml-10 mb-4">{renderOleFile()}</div>
+          <div className="justify-start mb-4">{renderOleFile()}</div>
 
           <p className="ml-10 mr-10 ">Add image:</p>
-          <div className="justify-center ml-10 mb-4">{renderFilePreview()}</div>
+          <div className="justify-center mb-4">{renderFilePreview()}</div>
           <div className="flex justify-start ml-10 mb-4">
             <input
               ref={inputRef}
@@ -345,18 +345,18 @@ const UpdateEventPage = () => {
           >
             <Checkbox value="1">Send mail to all people ?</Checkbox>
           </Form.Item>
-          <Form.Item className="flex justify-center">
+          <Form.Item className="flex justify-end">
             <Button
-              type="dashed"
-              className="w-[110px] text-white m-5 bg-green-500 items-center rounded-full"
+              type="primary"
+              className="mr-3"
               htmlType="submit"
               onClick={handleSubmit}
             >
-              Update event
+              Update
             </Button>
             <Button
-              type="dashed"
-              className="w-[110px] text-white bg-red-500 m-5 items-center rounded-full"
+              type="primary"
+              className="bg-gray-500"
               onClick={handleCancel}
             >
               Cancel

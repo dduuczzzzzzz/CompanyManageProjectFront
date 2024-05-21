@@ -9,7 +9,10 @@ import { User } from '../../components/teams/interface'
 import { useNavigate, useParams } from 'react-router-dom'
 import MainLayout from '../../components/layouts/main'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
-import { TEAM_DELETE_MEMBER } from '../../libs/constants/Permissions'
+import {
+  TEAM_ADD_MEMBER,
+  TEAM_DELETE_MEMBER,
+} from '../../libs/constants/Permissions'
 import { DeleteOutlined } from '@ant-design/icons'
 
 const permissionsInfo = getPermissions()
@@ -219,7 +222,7 @@ const ListMemberOfTeam = () => {
     <MainLayout>
       <div>
         <div className="... flex items-center justify-center">
-          <h1>{title}</h1>
+          <h1 className="text-sky-500 flex justify-center">{title}</h1>
         </div>
         <Button
           onClick={() => {
@@ -228,15 +231,20 @@ const ListMemberOfTeam = () => {
         >
           Back
         </Button>
-        <Button
-          type="primary"
-          className="bg-blue-500 float-right"
-          onClick={() => {
-            setShowModalAddMem(true)
-          }}
-        >
-          Add member
-        </Button>
+        {permissionsInfo &&
+          TEAM_ADD_MEMBER.every((element: string) =>
+            permissionsInfo.includes(element),
+          ) && (
+            <Button
+              type="primary"
+              className="bg-blue-500 float-right"
+              onClick={() => {
+                setShowModalAddMem(true)
+              }}
+            >
+              Add member
+            </Button>
+          )}
 
         {isLoading ? (
           <Spin className="flex justify-center" />

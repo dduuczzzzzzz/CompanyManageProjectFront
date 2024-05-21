@@ -4,6 +4,7 @@ export interface TypeEvent {
   id: number
   name: string
   type: string
+  type_id?: string
   start_time: number
   end_time: number
   description: string

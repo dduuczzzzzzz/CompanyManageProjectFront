@@ -32,7 +32,6 @@ import {
   TEAM_LIST_SUB,
   USER_ADD,
   USER_DELETE_MULTI,
-  USER_IMPORT,
   USER_LIST,
 } from '../../../libs/constants/Permissions'
 import { key } from 'localforage'
@@ -135,12 +134,8 @@ const Sidebar = () => {
         label: 'Session',
         children: [
           {
-            label: 'Check In',
+            label: 'Check In/Out',
             key: '/session/check-in',
-          },
-          {
-            label: 'Check Out',
-            key: '/session/check-out',
           },
           checkChildrenSidebar(SESSION_LIST, {
             label: 'Session list',

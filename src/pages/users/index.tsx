@@ -6,18 +6,27 @@ import {
   redirect,
   useNavigate,
 } from 'react-router-dom'
-import { Table, Space, Modal, Button, Spin } from 'antd'
+import { Table, Space, Modal, Button, Spin, Pagination } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import MainLayout from '../../components/layouts/main'
 import Filter from '../../components/user/filter'
 import { User } from '../../types/user'
 import { FilterType } from '../../types/user'
-import { userApi, userApiDelete } from '../../services/request/user'
+import { getAllRole, userApi, userApiDelete } from '../../services/request/user'
 import { getPermissions } from '../../libs/helpers/getLocalStorage'
-import { USER_DELETE, USER_UPDATE } from '../../libs/constants/Permissions'
+import {
+  USER_ADD,
+  USER_DELETE,
+  USER_UPDATE,
+} from '../../libs/constants/Permissions'
 import Spinner from '../../components/user/spin'
-import { getRole } from '../../services/request/user'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  DeleteOutlined,
+  UnorderedListOutlined,
+  AppstoreOutlined,
+} from '@ant-design/icons'
+import UserGridCardView from '../../components/user/UserGridCardView'
 
 const ListUsers = () => {
   const permissionsInfo = getPermissions()
@@ -34,6 +43,7 @@ const ListUsers = () => {
   const [isLoading, setIsLoading] = useState<boolean>()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentUserId, setCurrentUserId] = useState<any>(null)
+  const [gridView, setGridView] = useState<boolean>(false)
 
   const navigate = useNavigate()
   const handleDelete = async (key: string) => {
@@ -61,7 +71,7 @@ const ListUsers = () => {
   }, [filter, idUser])
 
   const getRoles = async () => {
-    const response = await getRole()
+    const response = await getAllRole()
     setRoles(response)
   }
   const columns: ColumnsType<User> = [
@@ -146,9 +156,9 @@ const ListUsers = () => {
       width: '5%',
       render: (status) => {
         if (status == 1) {
-          return <p>Active</p>
+          return <p>Inactive</p>
         } else {
-          return <p>Block</p>
+          return <p>Active</p>
         }
       },
     },
@@ -196,51 +206,74 @@ const ListUsers = () => {
     <MainLayout>
       <>
         <div className="mb-8">
-          <Button
-            type="primary"
-            className="mb-8 bg-green-500 float-right focus:bg-green-400"
-            onClick={() => {
-              navigate('/users/add')
-            }}
-          >
-            Create New User
+          {permissionsInfo &&
+            USER_ADD.every((element: string) =>
+              permissionsInfo.includes(element),
+            ) && (
+              <Button
+                type="primary"
+                className="mb-8 bg-green-500 float-right focus:bg-green-400"
+                onClick={() => {
+                  navigate('/users/add')
+                }}
+              >
+                Create New User
+              </Button>
+            )}
+          <Button onClick={() => setGridView(false)} className="mr-2">
+            <UnorderedListOutlined />
+          </Button>
+          <Button onClick={() => setGridView(true)}>
+            <AppstoreOutlined />
           </Button>
         </div>
         <Filter setFilter={setFilter} filterValue={filter} />
-        {isLoading ? (
-          <Spin className="flex justify-center" />
-        ) : (
+        {isLoading && <Spin className="flex justify-center" />}
+        {!isLoading && gridView && (
+          <UserGridCardView
+            data={users}
+            setCurrentUserId={setCurrentUserId}
+            showModal={showModal}
+          />
+        )}
+        {!isLoading && !gridView && (
           <>
             <Table
               columns={columns}
               dataSource={users}
               rowKey="id"
-              pagination={{
-                defaultPageSize: 10,
-                total: totalUser,
-                current: filter.page,
-                onChange: (page) => {
-                  setFilter((filter: any) => ({ ...filter, page: page }))
-                },
-              }}
+              pagination={false}
             />
-            <Modal
-              title="Delete User"
-              open={isModalOpen}
-              onOk={() => handleDelete(currentUserId)}
-              onCancel={handleCancel}
-            >
-              <p>
-                Are you sure you want to delete&nbsp;
-                {currentUserId &&
-                users.find((user) => user.id === currentUserId)
-                  ? users.find((user) => user.id === currentUserId)?.name
-                  : ''}
-                ?
-              </p>
-            </Modal>
           </>
         )}
+        <Pagination
+          current={filter.page}
+          total={totalUser}
+          showSizeChanger={true}
+          onChange={(page, pageSize) => {
+            setFilter((filter: any) => ({
+              ...filter,
+              page: page,
+              limit: pageSize,
+            }))
+          }}
+          className="mt-10 float-right"
+          style={{ marginTop: 10 }}
+        />
+        <Modal
+          title="Delete User"
+          open={isModalOpen}
+          onOk={() => handleDelete(currentUserId)}
+          onCancel={handleCancel}
+        >
+          <p>
+            Are you sure you want to delete&nbsp;
+            {currentUserId && users.find((user) => user.id === currentUserId)
+              ? users.find((user) => user.id === currentUserId)?.name
+              : ''}
+            ?
+          </p>
+        </Modal>
       </>
     </MainLayout>
   )

@@ -1,5 +1,10 @@
 import { SessionFilterType } from '../../../types/session'
-import { DatePicker, Space } from 'antd'
+import { Button, DatePicker, Space } from 'antd'
+import { getPermissions } from '../../../libs/helpers/getLocalStorage'
+import { SESSION_EXPORT } from '../../../libs/constants/Permissions'
+import { DownloadOutlined } from '@ant-design/icons'
+import { exportSessionAPI } from '../../../services/request/session'
+import filter from '../../../components/user/filter'
 
 interface SessionFilterProps {
   filter: SessionFilterType
@@ -7,6 +12,7 @@ interface SessionFilterProps {
 }
 
 const SessionFilter = ({ filter, setFilter }: SessionFilterProps) => {
+  const permissionsInfo = getPermissions()
   const currentDate = new Date()
   // Get the current year using the getFullYear() method
   const currentYear = currentDate.getFullYear()
@@ -49,6 +55,11 @@ const SessionFilter = ({ filter, setFilter }: SessionFilterProps) => {
     }
   }
 
+  const exportSessionHandler = async () => {
+    const searchParams = new URLSearchParams(filter)
+    return await exportSessionAPI(searchParams)
+  }
+
   return (
     <div className="flex justify-start mb-5">
       <DatePicker
@@ -57,6 +68,14 @@ const SessionFilter = ({ filter, setFilter }: SessionFilterProps) => {
         className="mr-2"
       />
       <DatePicker onChange={handleYearChange} picker="year" />
+      {permissionsInfo &&
+        SESSION_EXPORT.every((element: string) =>
+          permissionsInfo.includes(element),
+        ) && (
+          <Button className="ml-auto" onClick={exportSessionHandler}>
+            <DownloadOutlined />
+          </Button>
+        )}
     </div>
   )
 }

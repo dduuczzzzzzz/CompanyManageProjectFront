@@ -2,6 +2,7 @@ import { message, notification } from 'antd'
 import axiosInstance from './base'
 import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
+import { div } from '@tensorflow/tfjs'
 // import { ErrorMessage } from '../../types/user'
 
 export const getAllUserAPI = () => {
@@ -45,12 +46,18 @@ export const userApiDelete = async (
           notification['success']({
             key: 'delete',
             duration: 5,
-            message: 'Delete successfully',
+            message: 'Delete user successfully!',
           })
         }, 0)
         return true
       })
-  } catch (errors: any) {}
+  } catch (err: any) {
+    notification['error']({
+      duration: 5,
+      message: 'Delete user failed',
+      description: err.response.data.message,
+    })
+  }
 }
 
 export const userApiGetUser = async (
@@ -145,6 +152,20 @@ export const getRole = async () => {
   }
 }
 
+export const getAllRole = async () => {
+  try {
+    const roleData = await axiosInstance.get(`/role/list`).then((response) => {
+      if (response.data) {
+        const dataset = response.data.data
+        return dataset
+      }
+    })
+    return roleData
+  } catch (errors: any) {
+    const errorApi = errors.response.data.errors
+  }
+}
+
 export const GetImportInfor = async (
   {
     setDataImport,
@@ -203,4 +224,38 @@ export const ImportInfor = async (
     setLoopTime(false)
     setLoadings(false)
   }
+}
+export const exportUserAPI = (searchParams: URLSearchParams) => {
+  return axiosInstance
+    .get(`/user/exportUser`, {
+      params: searchParams,
+      responseType: 'blob',
+    })
+    .then((value: any) => {
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(value.data)
+
+      // Create an <a> element to trigger the download
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'users.xlsx'
+
+      // Trigger a click event to download the file
+      a.click()
+
+      // Cleanup
+      window.URL.revokeObjectURL(url)
+    })
+}
+
+export const getUserFaceRegisterStatusAPI = () => {
+  return axiosInstance.get(`user/regist-face-status`)
+}
+
+export const registerUserFaceAPI = () => {
+  return axiosInstance.post(`user/regist-face`, null, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 }

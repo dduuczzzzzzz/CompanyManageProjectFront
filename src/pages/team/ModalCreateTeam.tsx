@@ -113,12 +113,9 @@ const ModalCreateTeam: React.FC<Props> = ({
     <div>
       <Modal
         open={true}
-        title={blog === 'CREATE' ? 'CREATE NEW TEAM' : 'UPDATE TEAM'}
+        title={blog === 'CREATE' ? 'Save' : 'Update'}
         onCancel={() => toggleModalCreate()}
         footer={[
-          <Button key="back" onClick={() => toggleModalCreate()}>
-            RETURN
-          </Button>,
           <Button
             form="myForm"
             key="submit"
@@ -127,6 +124,14 @@ const ModalCreateTeam: React.FC<Props> = ({
             onClick={(e) => onCreate(parent_team_id, name, leader_id, details)}
           >
             {blog}
+          </Button>,
+          <Button
+            key="back"
+            onClick={() => toggleModalCreate()}
+            className="bg-gray-500"
+            type="primary"
+          >
+            Cancel
           </Button>,
         ]}
       >

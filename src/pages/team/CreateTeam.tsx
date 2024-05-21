@@ -20,7 +20,7 @@ const summitButtonLayout = {
 const errorValidate = {
   wrapperCol: {
     sm: {
-      offset: 4,
+      offset: 2,
     },
   },
 }
@@ -174,12 +174,8 @@ const CreateTeam = () => {
       parent_team_id: location?.state?.teamId,
     },
     validationSchema: Yup.object({
-      name: Yup.string()
-        .required('Required')
-        .min(4, 'Must be 4 characters or more'),
-      details: Yup.string()
-        .required('Required')
-        .min(10, 'Must be 10 characters or more'),
+      name: Yup.string().required('Team name is required'),
+      details: Yup.string().required('Team details is required'),
     }),
     onSubmit: (values) => {
       onCreate(
@@ -195,7 +191,7 @@ const CreateTeam = () => {
     <MainLayout>
       <>
         <div className="... flex items-center justify-center">
-          <h1>Create new team</h1>
+          <h1 className="text-sky-500 flex justify-center">Add Team</h1>
         </div>
         {isLoading ? (
           <Spin className="flex justify-center" />
@@ -208,7 +204,16 @@ const CreateTeam = () => {
               className={'w-3/4'}
               scrollToFirstError
             >
-              <Form.Item name="Name" label="Name">
+              <Form.Item
+                name="Name"
+                label="Name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Team name is required!',
+                  },
+                ]}
+              >
                 <Input
                   size="large"
                   value={formik.values.name}
@@ -218,20 +223,16 @@ const CreateTeam = () => {
                 />
               </Form.Item>
               <Form.Item
-                {...errorValidate}
-                style={{ marginTop: -30, marginBottom: -10 }}
+                name="Details"
+                label="Details"
+                className="mb-8"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Team details is required!',
+                  },
+                ]}
               >
-                {formik.errors.name && formik.touched.name ? (
-                  <p
-                    style={{
-                      color: 'red',
-                    }}
-                  >
-                    {formik.errors.name}
-                  </p>
-                ) : null}
-              </Form.Item>
-              <Form.Item name="Details" label="Details" className="mb-8">
                 <TextArea
                   rows={4}
                   showCount
@@ -242,20 +243,6 @@ const CreateTeam = () => {
                   name="details"
                   onChange={formik.handleChange}
                 />
-              </Form.Item>
-              <Form.Item
-                {...errorValidate}
-                style={{ marginTop: -30, marginBottom: -10 }}
-              >
-                {formik.errors.details && formik.touched.details ? (
-                  <p
-                    style={{
-                      color: 'red',
-                    }}
-                  >
-                    {formik.errors.details}
-                  </p>
-                ) : null}
               </Form.Item>
               <Form.Item name="Leader" label="Leader">
                 <Select
@@ -300,22 +287,24 @@ const CreateTeam = () => {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item {...summitButtonLayout}>
+              <Form.Item className="flex justify-end">
                 <Button
                   form="myForm"
                   key="submit"
                   htmlType="submit"
                   type="primary"
                 >
-                  Create
+                  Save
                 </Button>
                 <Button
+                  type="primary"
+                  className="bg-gray-500"
                   onClick={() => {
                     navigate(-1)
                   }}
                   style={{ marginLeft: 10 }}
                 >
-                  Back
+                  Cancel
                 </Button>
               </Form.Item>
             </Form>

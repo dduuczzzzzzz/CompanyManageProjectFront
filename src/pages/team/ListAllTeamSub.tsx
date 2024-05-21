@@ -84,6 +84,7 @@ const ListAllTeamSub = () => {
         })
       }, 500)
     } else {
+      setOpenModalDelete(false)
       setTimeout(() => {
         notification['error']({
           duration: 5,
@@ -187,7 +188,7 @@ const ListAllTeamSub = () => {
         <ModalCreateTeam
           openModal={setOpenModalUpdateTeam}
           onCreate={onUpdate}
-          blog={'UPDATE'}
+          blog={'Update'}
           team={teamCheck}
           checkListMain={false}
         />

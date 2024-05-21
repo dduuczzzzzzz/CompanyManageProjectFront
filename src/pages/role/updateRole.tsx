@@ -149,6 +149,13 @@ const UpdateRolePage = () => {
                 name="role_name"
                 label="Role name"
                 initialValue={role?.role_name}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Role name is required!',
+                    whitespace: true,
+                  },
+                ]}
               >
                 <Input key="role_name" />
               </Form.Item>
@@ -159,11 +166,19 @@ const UpdateRolePage = () => {
             className="ml-10 mr-10 "
             label="Description"
             initialValue={role?.description}
+            rules={[
+              {
+                required: true,
+                message: 'Role description is required!',
+                whitespace: true,
+              },
+            ]}
           >
             <Input.TextArea rows={3} key="description" />
           </Form.Item>
 
-          <div className="h-[300px] w-[full] ml-[50px] overflow-y-scroll">
+          <div className="h-[300px] w-[full] ml-[40px] overflow-y-scroll">
+            <p>Role Permission</p>
             <table>
               <tbody>
                 {groupName?.map((name: string) => {
@@ -212,19 +227,19 @@ const UpdateRolePage = () => {
             </table>
           </div>
 
-          <Form.Item className="flex justify-center">
+          <Form.Item className="pt-5 flex justify-end">
             <Button
-              type="dashed"
-              className="w-[110px] text-white m-5 bg-green-500 items-center rounded-full"
+              type="primary"
+              className="mr-3"
               htmlType="submit"
               onClick={handleSubmit}
               key="edit_button"
             >
-              Update role
+              Save
             </Button>
             <Button
-              type="dashed"
-              className="w-[110px] text-white bg-red-500 m-5 items-center rounded-full"
+              type="primary"
+              className="bg-gray-500"
               onClick={handleCancel}
               key="cancel_button"
             >

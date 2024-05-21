@@ -137,7 +137,6 @@ const AttendanceCalendar = ({
     setEnd(info.endStr)
     setInitview(info.view.type)
   }
-
   return (
     <>
       <FullCalendar
