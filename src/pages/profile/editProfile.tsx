@@ -13,7 +13,7 @@ import {
   notification,
   DatePicker,
 } from 'antd'
-import { CloseOutlined } from '@ant-design/icons'
+import { CloseOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { LIST_GENDER } from '../../libs/constants/Options'
 import { validationSchema } from '../../validations/editProfile'
@@ -24,6 +24,67 @@ const editProfileRules = {
     await validationSchema.validateSyncAt(field, { [field]: value })
   },
 }
+
+const RenderAvatar = ({
+  filee,
+  handleFileDelete,
+  onClick,
+}: {
+  filee: any
+  handleFileDelete: () => void
+  onClick?: () => void
+}) => {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <div
+      className="flex justify-center mb-4 relative"
+      onMouseEnter={() => {
+        if (filee === './uet.png') {
+          setHovered(false)
+          return
+        }
+        setHovered(true)
+      }}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Avatar
+        src={filee}
+        alt="avatar"
+        className="w-[150px] h-[150px] flex justify-center m-1"
+        style={{
+          filter: hovered ? 'blur(2px)' : 'none',
+          transition: 'filter 0.3s',
+        }}
+        onClick={onClick}
+      ></Avatar>
+      {hovered && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'white',
+            fontSize: '24px',
+            zIndex: 1,
+          }}
+        >
+          <DeleteOutlined
+            onClick={() => {
+              handleFileDelete()
+              setHovered(false)
+            }}
+          />
+        </div>
+      )}
+      {/* <Button
+                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
+                onClick={() => handleFileDelete(fileIndex)}
+              /> */}
+    </div>
+  )
+}
+
 const UpdateProfilePage = () => {
   const navigate = useNavigate()
   const [file, setFile] = useState<string | null>(null)
@@ -144,7 +205,7 @@ const UpdateProfilePage = () => {
       ) : (
         <Form name="update-profile" layout="vertical" form={antForm}>
           <div className="flex justify-center mb-4">
-            <Avatar
+            {/* <Avatar
               src={file ? file : './uet.png'}
               alt="avatar"
               className="w-[150px] h-[150px] flex justify-center"
@@ -157,7 +218,14 @@ const UpdateProfilePage = () => {
                 icon={<CloseOutlined className="w-[10px] h-[10px]" />}
                 onClick={() => handleClear(inputRef)}
               />
-            )}
+            )} */}
+            <RenderAvatar
+              filee={file ? file : './uet.png'}
+              handleFileDelete={() => handleClear(inputRef)}
+              onClick={() => {
+                inputRef.current?.click()
+              }}
+            />
           </div>
           <div className="hidden flex justify-center ml-10 mb-4">
             <input

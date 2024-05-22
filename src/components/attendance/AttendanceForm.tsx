@@ -223,7 +223,7 @@ const AttendanceForm = ({
         >
           <TextArea rows={4} disabled={disableField} />
         </Form.Item>
-        <Form.Item label="Image" name="img" rules={[rules]} key="img">
+        {/* <Form.Item label="Image" name="img" rules={[rules]} key="img">
           <Upload
             listType="picture-card"
             beforeUpload={beforeUpload}
@@ -237,7 +237,7 @@ const AttendanceForm = ({
               <div>Upload</div>
             </div>
           </Upload>
-        </Form.Item>
+        </Form.Item> */}
         {children}
       </Form>
     </>

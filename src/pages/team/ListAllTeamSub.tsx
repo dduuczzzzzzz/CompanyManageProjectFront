@@ -52,7 +52,7 @@ const ListAllTeamSub = () => {
     setTeamCheck({
       parent_team_id: res.data.data.parent_team_id,
       name: res.data.data.name,
-      leader_id: res.data.data.leader.id,
+      leader_id: res.data.data.leader?.id,
       details: res.data.data.details,
     })
     setOpenModalUpdateTeam(true)

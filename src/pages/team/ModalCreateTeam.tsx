@@ -35,9 +35,7 @@ const ModalCreateTeam: React.FC<Props> = ({
 
   const [name, setName] = useState<string>(team.name)
   const [leader_id, setLeader_id] = useState<string>(team.leader_id)
-  const [parent_team_id, setParent_team_id] = useState<string>(
-    team.parent_team_id,
-  )
+  const [parent_team_id, setParent_team_id] = useState<any>(team.parent_team_id)
   const [details, setDetails] = useState<string>(team.details)
   const [filter, setFilter] = useState({
     search: '',
@@ -95,6 +93,7 @@ const ModalCreateTeam: React.FC<Props> = ({
 
   const handleChangeTeam = (value: number | undefined) => {
     if (!value) {
+      setParent_team_id(null)
       return
     } else {
       setParent_team_id(value.toString())
@@ -159,11 +158,11 @@ const ModalCreateTeam: React.FC<Props> = ({
                 allowClear
                 showSearch
                 style={{ width: '100%' }}
-                placeholder={blog}
+                placeholder={'Choose leader'}
                 onChange={handleChange}
                 onSearch={(e) => handleSearch(e)}
                 filterOption={() => true}
-                defaultValue={parseInt(leader_id)}
+                defaultValue={leader_id ? parseInt(leader_id) : null}
               >
                 {listAllUser.map((user: User) => (
                   <Option key={user.id} value={user.id}>

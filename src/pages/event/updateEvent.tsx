@@ -16,9 +16,61 @@ import MainLayout from '../../components/layouts/main'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import dayjs from 'dayjs'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { CloseOutlined } from '@ant-design/icons'
+import { CloseOutlined, DeleteOutlined } from '@ant-design/icons'
 import { editEvent, getTypeEvent, updateEvent } from '../../services/event'
 import { TypeEvent } from '../../types/event'
+
+const RenderAvatar = ({
+  fileIndex,
+  filee,
+  handleFileDelete,
+  url,
+}: {
+  fileIndex: any
+  filee: any
+  handleFileDelete: () => void
+  url?: any
+}) => {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <div
+      key={fileIndex}
+      className="flex justify-center mb-4 relative"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Avatar
+        shape="square"
+        src={url ? url : URL.createObjectURL(filee)}
+        alt="avatar"
+        className="w-[150px] h-[150px] flex justify-center m-1"
+        style={{
+          filter: hovered ? 'blur(2px)' : 'none',
+          transition: 'filter 0.3s',
+        }}
+      ></Avatar>
+      {hovered && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'white',
+            fontSize: '24px',
+            zIndex: 1,
+          }}
+        >
+          <DeleteOutlined onClick={handleFileDelete} />
+        </div>
+      )}
+      {/* <Button
+                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
+                onClick={() => handleFileDelete(fileIndex)}
+              /> */}
+    </div>
+  )
+}
 
 const UpdateEventPage = () => {
   const [file, setFile] = useState<Array<any>>([])
@@ -189,14 +241,10 @@ const UpdateEventPage = () => {
         <div className="flex justify-start ml-10 mb-4" key={index}>
           {chunk.map((filee: any, fileIndex: number) => (
             <div key={fileIndex} className="flex justify-center ml-10 mb-4">
-              <Avatar
-                src={URL.createObjectURL(filee)}
-                alt="avatar"
-                className="w-[150px] h-[150px] flex justify-center m-1"
-              ></Avatar>
-              <Button
-                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
-                onClick={() => handleFileDelete(fileIndex)}
+              <RenderAvatar
+                fileIndex={fileIndex}
+                filee={filee}
+                handleFileDelete={() => handleFileDelete(fileIndex)}
               />
             </div>
           ))}
@@ -216,7 +264,7 @@ const UpdateEventPage = () => {
         <div className="flex justify-start ml-10 mb-4" key={index}>
           {chunk.map((url: string, index: number) => (
             <div key={index} className="flex justify-center ml-10 mb-4">
-              <Avatar
+              {/* <Avatar
                 src={url}
                 alt="avatar"
                 className="w-[150px] h-[150px] flex justify-center m-1"
@@ -225,10 +273,21 @@ const UpdateEventPage = () => {
                 icon={<CloseOutlined className="w-[10px] h-[10px]" />}
                 onClick={() =>
                   handleOldFileDelete(
+                    url.replace(String(process.env.REACT_APP_API_STORAGE_URL), ''),
+                    index,
+                  )
+                }
+              /> */}
+              <RenderAvatar
+                fileIndex={index}
+                filee={url}
+                handleFileDelete={() =>
+                  handleOldFileDelete(
                     url.replace('http://127.0.0.1:8000/storage/', ''),
                     index,
                   )
                 }
+                url={url}
               />
             </div>
           ))}

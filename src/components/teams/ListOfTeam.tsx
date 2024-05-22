@@ -91,12 +91,6 @@ const ListOfTeam: React.FC<Props> = ({
       align: 'center',
     },
     {
-      title: 'Created at',
-      key: 'created_at',
-      dataIndex: 'created_at',
-      width: '12%',
-    },
-    {
       title: 'Leader',
       dataIndex: 'leader',
       key: 'leader',
@@ -173,13 +167,6 @@ const ListOfTeam: React.FC<Props> = ({
       title: 'Members',
       key: 'total_member',
       dataIndex: 'total_member',
-    },
-    {
-      title: 'Created at',
-      key: 'created_at',
-      dataIndex: 'created_at',
-      align: 'center',
-      width: '12%',
     },
     {
       title: 'Leader',

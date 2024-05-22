@@ -336,8 +336,8 @@ const EventPage = () => {
                           <img
                             key={index}
                             src={item1}
-                            className="w-[20%] h-[200px] m-5"
-                            alt="a của tỉnh"
+                            className="w-[20%] h-[200px] m-5 object-cover	"
+                            alt="image"
                           />
                         ))}
                     </div>
