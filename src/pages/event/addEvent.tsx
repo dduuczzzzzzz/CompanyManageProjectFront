@@ -14,7 +14,7 @@ import {
   UploadProps,
   UploadFile,
 } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../components/layouts/main'
@@ -23,6 +23,58 @@ import dayjs from 'dayjs'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { addEvent, getTypeEvent } from '../../services/event'
+import filter from '../../components/user/filter'
+
+const RenderAvatar = ({
+  fileIndex,
+  filee,
+  handleFileDelete,
+}: {
+  fileIndex: any
+  filee: any
+  handleFileDelete: () => void
+}) => {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <div
+      key={fileIndex}
+      className="flex justify-center mb-4 relative"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Avatar
+        shape="square"
+        src={URL.createObjectURL(filee)}
+        alt="avatar"
+        className="w-[150px] h-[150px] flex justify-center m-1"
+        style={{
+          filter: hovered ? 'blur(2px)' : 'none',
+          transition: 'filter 0.3s',
+        }}
+      ></Avatar>
+      {hovered && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'white',
+            fontSize: '24px',
+            zIndex: 1,
+          }}
+        >
+          <DeleteOutlined onClick={handleFileDelete} />
+        </div>
+      )}
+      {/* <Button
+                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
+                onClick={() => handleFileDelete(fileIndex)}
+              /> */}
+    </div>
+  )
+}
+
 const AddEventPage = () => {
   const [file, setFile] = useState<Array<any>>([])
   const inputRef = useRef(null)
@@ -165,17 +217,11 @@ const AddEventPage = () => {
       return chunks.map((chunk, index) => (
         <div className="flex justify-start mb-4" key={index}>
           {chunk.map((filee: any, fileIndex: number) => (
-            <div key={fileIndex} className="flex justify-center mb-4">
-              <Avatar
-                src={URL.createObjectURL(filee)}
-                alt="avatar"
-                className="w-[150px] h-[150px] flex justify-center m-1"
-              ></Avatar>
-              <Button
-                icon={<CloseOutlined className="w-[10px] h-[10px]" />}
-                onClick={() => handleFileDelete(fileIndex)}
-              />
-            </div>
+            <RenderAvatar
+              fileIndex={fileIndex}
+              filee={filee}
+              handleFileDelete={() => handleFileDelete(fileIndex)}
+            />
           ))}
         </div>
       ))
